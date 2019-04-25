@@ -82,6 +82,8 @@ class Userdb:
 
         self.__conn.commit()
 
+    def loginvalid(self):
+        pass
 
     def hash_password(password):
         """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
