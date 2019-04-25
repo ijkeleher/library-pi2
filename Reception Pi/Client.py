@@ -81,7 +81,7 @@ class Userdb:
         cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)", params)
 
         self.__conn.commit()
-        
+
 
     def hash_password(password):
         """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
