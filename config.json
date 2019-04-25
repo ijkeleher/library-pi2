@@ -1,0 +1,7 @@
+{
+  "dbuser": "pi",
+  "dbpass": "abc123",
+  "dbname": "rpdb",
+  "hostname": "localhost"
+
+}

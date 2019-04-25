@@ -1,0 +1,16 @@
+sudo mysql_secure_installation
+
+sudo mysql -u root -p
+CREATE DATABASE rpdb;
+USE rpdb;
+CREATE USER 'pi'@'localhost' IDENTIFIED BY 'abc123';
+GRANT ALL PRIVILEGES ON rpdb.* TO 'pi'@'localhost';
+FLUSH PRIVILEGES;
+quit
+
+mysql -u pi -p
+USE rpdb;
+CREATE TABLE rpuser (username VARCHAR, password VARCHAR, firstname VARCHAR, lastname VARCHAR, email VARCHAR);
+quit
+
+pip3 install mysqlclient
