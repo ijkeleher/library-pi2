@@ -6,3 +6,6 @@ $ source myproject/bin/activate
 $ export FLASK_ENV=development 
 $ export FLASK_APP=app.py
 $ flask run --host=0.0.0.0
+## set flask ,env
+$ echo "FLASK_ENV=development \
+FLASK_APP=app.py" >> .flaskenv
