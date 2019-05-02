@@ -1,2 +1,4 @@
 env/
 master-pi/.flaskenv
+master-pi/.flaskenv
+master-pi/__pycache__/
