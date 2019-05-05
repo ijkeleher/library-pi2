@@ -1,7 +1,7 @@
 {
-  "dbuser": "pi",
-  "dbpass": "abc123",
+  "dbuser": "root",
+  "dbpass": "ihv8O3u4d3eHNeD5",
   "dbname": "rpdb",
-  "hostname": "localhost"
+  "hostname": "35.189.9.24"
 
 }
