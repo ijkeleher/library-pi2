@@ -55,13 +55,13 @@ class Menu:
         except ValueError:
             print("Invalid option!")
 
-    def get_email(self):
+    def get_login_detail(self):
         """
         Return 
-            email that can be used to login
+            username or email that user need to login with
         """
-        email = str(input("Please enter your email addresss: "))
-        return email
+        detail = str(input("Please enter your email addresss: "))
+        return detail
 
 
 class Userdb:
@@ -138,12 +138,31 @@ class Userdb:
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
-    def login_with_email(self, email):
-        if re.fullmatch(self.email_addr, email) is None:
-            print("Invalid email!")
+    def login(self, detail, email_login):
+        """
+        Param:
+            detail: login detail, either username or email
+            email_login: True if user choose to login with email, False if user choose to login with username
+        Return:
+            True if login is valid
+            False otherwise
+        """
+        if email_login:
+            if re.fullmatch(self.email_addr, detail) is None:
+                print("Invalid email!")
+            else:
+                cursor = self.__conn.cursor()
+                cursor.execute("SELECT * FROM rpuser WHERE email = %s", [detail])
+                data = cursor.fetchone()
+                if data is not None:
+                    print(data[1])
+                    stored_password = data[1]
+
+                    password = getpass.getpass("Please enter your password: ")
+                    return self.verify_password(stored_password, password)
         else:
             cursor = self.__conn.cursor()
-            cursor.execute("SELECT * FROM rpuser WHERE email = %s", [email])
+            cursor.execute("SELECT * FROM rpuser WHERE username = %s", [detail])
             data = cursor.fetchone()
             if data is not None:
                 print(data[1])
@@ -194,15 +213,19 @@ class Main:
                 if login_with_email == None:
                     continue
                 elif login_with_email:
-                    email = menu.get_email()
-                    valid_login = db.login_with_email(email)
+                    email = menu.get_login_detail()
+                    valid_login = db.login(email, True)
                     if valid_login:
                         print("Login Successfully")
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
-                    # add function about login with username
-                    pass
+                    username = menu.get_login_detail()
+                    valid_login = db.login(username, False)
+                    if valid_login:
+                        print("Login Successfully")
+                    else:
+                        print("Username or password is not correct!")
 
             elif selection == 2:
                 db.createuser()
