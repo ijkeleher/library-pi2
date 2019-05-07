@@ -85,14 +85,14 @@ class Userdb:
     def loginvalid(self):
         pass
 
-    def hash_password(self, password):
+    def hash_password(password):
         """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
         salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
         pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
         return (salt + pwdhash).decode('ascii')
 
-    def verify_password(self, stored_password, provided_password):
+    def verify_password(stored_password, provided_password):
         """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
         salt = stored_password[:64]
         stored_password = stored_password[64:]
@@ -104,11 +104,8 @@ class Userdb:
 class Config:
 
     def __init__(self, filename):
-        try:
-            with open(filename) as data:
-                self.__conf = json.load(data)
-        except EnvironmentError:
-            print("Can't open "+filename)
+        with open(filename) as data:
+            self.__conf = json.load(data)
 
     def getdbuser(self):
         return self.__conf['dbuser']
@@ -143,6 +140,3 @@ class Main:
                 db.createuser()
             else:
                 sys.exit(0)
-
-if __name__ == "__main__":
-    Main().main()
