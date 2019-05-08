@@ -222,8 +222,11 @@ class Main:
 
 
     def RemoteMenu(self):
-       print("Logged in succesfully!")
+        print("Logged in succesfully!")
 
+        session = SocketSession(self.host, self.port)
+
+        session.Connect()
 
 
 
