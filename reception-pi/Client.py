@@ -208,9 +208,39 @@ class SocketSession:
         self.port = port
     
 
-    def Connect(self):
-       print("Establishing connection to remote host @ " + self.host+":"+self.port)
+    def Connect(self, user):
+        print("Establishing connection to remote host @ " + self.host+":"+str(self.port))
+      
+        self.user = user
+
+        # Connect
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        self.sock.connect((self.host, self.port))
+
+        # Start by sending user info
+        self.sock.sendall(bytes(user, 'UTF-8')) 
+        # Get back the main menu
+        menu = self.sock.recv(4096)
+
+        return menu
+
+    def ConsoleSession(self):
        
+        while True:
+           
+            # Get some user input
+            inp = input("Please enter your response: ")
+            
+            # Shoot it off to the server
+            self.sock.sendall(bytes(inp, 'UTF-8'))
+           
+            # Get the response
+            response = self.sock.recv(4096)
+            print(response)
+
+            # if response is 'TERMINATE':
+            #   break
+
 
 
 
@@ -221,12 +251,16 @@ class Main:
         self.port = 6969
 
 
-    def RemoteMenu(self):
+    def RemoteMenu(self, user):
         print("Logged in succesfully!")
 
         session = SocketSession(self.host, self.port)
 
-        session.Connect()
+        main_menu = session.Connect(user)
+
+        print(main_menu)
+
+        session.ConsoleSession()
 
 
 
@@ -251,14 +285,15 @@ class Main:
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
-                        self.RemoteMenu()
+                        # TODO: get username for use with remote menu
+                        self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
-                        self.RemoteMenu()
+                        self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
 
