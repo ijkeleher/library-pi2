@@ -6,8 +6,11 @@ import json
 import hashlib, binascii, os
 import getpass
 import re
+import socket
+
 
 class Menu:
+
 
     def displaymenu(self):
         print("""
@@ -198,9 +201,32 @@ class Config:
         return self.__conf['hostname']
 
 
+class SocketSession:
+    
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+    
+
+    def Connect(self):
+       print("Establishing connection to remote host @ " + self.host+":"+self.port)
+       
+
 
 
 class Main:
+
+    def __init__(self):
+        self.host = '127.0.0.1'
+        self.port = 6969
+
+
+    def RemoteMenu(self):
+       print("Logged in succesfully!")
+
+
+
+
 
     def main(self):
 
@@ -208,6 +234,8 @@ class Main:
         configfile = '../config.json' # set path to config.jsons
         config = Config(configfile)
         db = Userdb(config)
+
+
 
         while True:
             selection = menu.getselection()
@@ -220,14 +248,14 @@ class Main:
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
-                        print("Login Successfully")
+                        self.RemoteMenu()
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
-                        print("Login Successfully")
+                        self.RemoteMenu()
                     else:
                         print("Username or password is not correct!")
 
