@@ -3,51 +3,56 @@ import imutils
 import time
 import cv2
 
-detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+class Facedetect:
 
-print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
+    def getidentity(self):
 
-time.sleep(2.0)
-total = 0
+        detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-# loop over the frames from the video stream
-while True:
+        print("[INFO] starting video stream...")
+        vs = VideoStream(src=0).start()
 
-    frame = vs.read()
-    orig = frame.copy()
-    frame = imutils.resize(frame, width=400)
+        time.sleep(2.0)
+        total = 0
 
-    # detect faces in the grayscale frame
-    faces = detector.detectMultiScale(
-        cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), scaleFactor=1.1,
-        minNeighbors=5, minSize=(30, 30))
+        # loop over the frames from the video stream
+        while True:
 
-    # loop over the face detections and draw them on the frame
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            frame = vs.read()
+            orig = frame.copy()
+            frame = imutils.resize(frame, width=400)
 
-    face_file_name = "dataset/chris/img.png"
-    roi_color = frame[y:y + h, x:x + w]
-    cv2.imwrite(face_file_name, roi_color)
+            # detect faces in the grayscale frame
+            faces = detector.detectMultiScale(
+                cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), scaleFactor=1.1,
+                minNeighbors=5, minSize=(30, 30))
 
-    src = cv2.imread("dataset/chris/img.png", cv2.IMREAD_COLOR)
-    hist1 = cv2.calcHist([src], [0], None, [256], [0, 256])
-    src0 = cv2.imread("dataset/chris/00000.png", cv2.IMREAD_COLOR)
-    hist2 = cv2.calcHist([src0], [0], None, [256], [0, 256])
+            # loop over the face detections and draw them on the frame
+            for (x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    sc0 = cv2.compareHist(hist1, hist2, cv2.HISTCMP_BHATTACHARYYA)
+            face_file_name = "dataset/chris/img.png"
+            roi_color = frame[y:y + h, x:x + w]
+            cv2.imwrite(face_file_name, roi_color)
 
-    if sc0 < 0.2:
-        cv2.putText(frame, "Chris", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1)
-        print("Chris detected")
+            src = cv2.imread("dataset/chris/img.png", cv2.IMREAD_COLOR)
+            hist1 = cv2.calcHist([src], [0], None, [256], [0, 256])
+            src0 = cv2.imread("dataset/chris/00000.png", cv2.IMREAD_COLOR)
+            hist2 = cv2.calcHist([src0], [0], None, [256], [0, 256])
 
-    print(sc0)
+            sc0 = cv2.compareHist(hist1, hist2, cv2.HISTCMP_BHATTACHARYYA)
 
-    cv2.imshow("Frame", frame)
+            if sc0 < 0.2:
+                cv2.putText(frame, "Chris", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1)
+                print("Chris detected")
+                return "Chris"
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+            print(sc0)
 
-vs.release()
-cv2.destroyAllWindows()
+            cv2.imshow("Frame", frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        vs.release()
+        cv2.destroyAllWindows()
