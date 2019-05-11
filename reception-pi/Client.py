@@ -55,12 +55,18 @@ class Menu:
         except ValueError:
             print("Invalid option!")
 
-    def get_login_detail(self):
+    def get_login_detail(self, email):
         """
+        Param
+            if user choose to login with email
         Return 
             username or email that user need to login with
         """
-        detail = str(input("Please enter your email addresss: "))
+        detail = ""
+        if email:
+            detail = str(input("Please enter your email address: "))
+        else:
+            detail = str(input("Please enter your username: "))
         return detail
 
 
@@ -155,7 +161,6 @@ class Userdb:
                 cursor.execute("SELECT * FROM rpuser WHERE email = %s", [detail])
                 data = cursor.fetchone()
                 if data is not None:
-                    print(data[1])
                     stored_password = data[1]
 
                     password = getpass.getpass("Please enter your password: ")
@@ -165,7 +170,6 @@ class Userdb:
             cursor.execute("SELECT * FROM rpuser WHERE username = %s", [detail])
             data = cursor.fetchone()
             if data is not None:
-                print(data[1])
                 stored_password = data[1]
 
                 password = getpass.getpass("Please enter your password: ")
@@ -213,14 +217,14 @@ class Main:
                 if login_with_email == None:
                     continue
                 elif login_with_email:
-                    email = menu.get_login_detail()
+                    email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
                         print("Login Successfully")
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
-                    username = menu.get_login_detail()
+                    username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
                         print("Login Successfully")
