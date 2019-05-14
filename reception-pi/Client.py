@@ -235,11 +235,14 @@ class SocketSession:
             self.sock.sendall(bytes(inp, 'UTF-8'))
            
             # Get the response
-            response = self.sock.recv(4096)
+            response = str(self.sock.recv(4096), 'utf-8')
+            if 'TERMINATE_MAGIC_8192' in response:
+                print("Logging out...\n")
+                print("Returning to main menu...\n\n")
+                break
+            
             print(response)
 
-            # if response is 'TERMINATE':
-            #   break
 
 
 
@@ -258,6 +261,8 @@ class Main:
 
         main_menu = session.Connect(user)
 
+
+        main_menu = str(main_menu, 'utf-8')
         print(main_menu)
 
         session.ConsoleSession()

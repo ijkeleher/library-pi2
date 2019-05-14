@@ -23,22 +23,50 @@ class SocketSession:
         
         # Don't worry about threading as only one reception pi for moment
         while True:
-            # Get the connection 
-            conn, addr = self.sock.accept()
-            print("Got a connection from "+str(addr))
+            try:
+                # Get the connection 
+                conn, addr = self.sock.accept()
+                print("Got a connection from "+str(addr))
 
-            # Start getting the user info
-            user = conn.recv(4096)
-            print("The user is "+str(user))
-            # Send back the main menu
-            conn.sendall(bytes("Shalom, main menu goes here", 'UTF-8')) 
+                # Start getting the user info
+                user = conn.recv(4096)
+                print("The user is "+str(user))
+                # Send back the main menu
+                menu = "\n\n" \
+                     + "Welcome! Would you like to\n" \
+                     + "1. Search the book catalogue\n" \
+                     + "2. Borrow\n" \
+                     + "3. Logout\n"
+                conn.sendall(bytes(menu, 'UTF-8')) 
 
-            while True:
-                # Start getting the users choice
-                user_choice = conn.recv(4096)
-                print("Got "+str(user_choice)+" from client")
-                # Send back the menu
-                conn.sendall(bytes("Shalom, here's another menu", 'UTF-8')) 
+
+                menu = 'main'
+                while True:
+                    # Send this to the user at the end of the method
+                    response = "An error happened on the server"
+
+
+                    # Start getting the users choice
+                    user_choice = str(conn.recv(4096), 'utf-8')
+                    print("Got "+user_choice+" from client")
+
+                    if menu is 'main':
+                        print("Processing main menu choice")
+                        if user_choice is '1':
+                            response = 'SEARCHING FOR BOOKS BEEP BOOP BEEP'
+                        elif user_choice is '2':
+                            response = 'What book would you like to borrow?'
+                        elif user_choice is '3':
+                            response = 'TERMINATE_MAGIC_8192'
+                        else:
+                            response = 'Invalid response, please try again :)'
+                        
+
+
+                    # Send back the menu
+                    conn.sendall(bytes(response, 'UTF-8')) 
+            except:
+                print("Connection terminated... Listening again")
 
 
 
