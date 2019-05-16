@@ -2,3 +2,5 @@ env/
 master-pi/.flaskenv
 master-pi/.flaskenv
 master-pi/__pycache__/
+master-pi/.vscode/
+master-pi/venv/
