@@ -9,17 +9,17 @@ bootstrap = Bootstrap(app)
 
 def getData():
     time = datetime.now().strftime("%H:%M:%S")
-    temp = 10.1
-    return time, temp
+    motd = "Welcome to the library"
+    return time, motd
 
  # main route 
 @app.route("/")
 
 def index():    
-    time, temp = getData()
+    time, motd = getData()
     templateData = {
                     'time': time,
-                    'temp': temp
+                    'motd': motd
                    }
     return render_template('index.html', **templateData)
 
