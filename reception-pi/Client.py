@@ -6,8 +6,11 @@ import json
 import hashlib, binascii, os
 import getpass
 import re
+import socket
+
 
 class Menu:
+
 
     def displaymenu(self):
         print("""
@@ -198,9 +201,74 @@ class Config:
         return self.__conf['hostname']
 
 
+class SocketSession:
+    
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+    
+
+    def Connect(self, user):
+        print("Establishing connection to remote host @ " + self.host+":"+str(self.port))
+      
+        self.user = user
+
+        # Connect
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        self.sock.connect((self.host, self.port))
+
+        # Start by sending user info
+        self.sock.sendall(bytes(user, 'UTF-8')) 
+        # Get back the main menu
+        menu = self.sock.recv(4096)
+
+        return menu
+
+    def ConsoleSession(self):
+       
+        while True:
+           
+            # Get some user input
+            inp = input("Please enter your response: ")
+            
+            # Shoot it off to the server
+            self.sock.sendall(bytes(inp, 'UTF-8'))
+           
+            # Get the response
+            response = str(self.sock.recv(4096), 'utf-8')
+            if 'TERMINATE_MAGIC_8192' in response:
+                print("Logging out...\n")
+                print("Returning to main menu...\n\n")
+                break
+            
+            print(response)
+
+
+
 
 
 class Main:
+
+    def __init__(self):
+        self.host = '127.0.0.1'
+        self.port = 6969
+
+
+    def RemoteMenu(self, user):
+        print("Logged in succesfully!")
+
+        session = SocketSession(self.host, self.port)
+
+        main_menu = session.Connect(user)
+
+
+        main_menu = str(main_menu, 'utf-8')
+        print(main_menu)
+
+        session.ConsoleSession()
+
+
+
 
     def main(self):
 
@@ -208,6 +276,8 @@ class Main:
         configfile = '../config.json' # set path to config.jsons
         config = Config(configfile)
         db = Userdb(config)
+
+
 
         while True:
             selection = menu.getselection()
@@ -220,14 +290,15 @@ class Main:
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
-                        print("Login Successfully")
+                        # TODO: get username for use with remote menu
+                        self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
-                        print("Login Successfully")
+                        self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
 
