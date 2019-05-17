@@ -3,7 +3,8 @@ master-pi/.flaskenv
 master-pi/.flaskenv
 master-pi/__pycache__/
 master-pi/.vscode/
-master-pi/venv/
-/venv/
+master-pi/venv
+/venv
 .venv
-.vscode
+/.vscode
+master-pi/.vscode
