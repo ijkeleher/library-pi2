@@ -20,6 +20,7 @@ class RPTest(unittest.TestCase):
         hashed_pwd = db.hash_password(provided_pwd)
         self.assertTrue(db.verify_password(hashed_pwd, provided_pwd))
 
+    # TODO: test register new user on local db
     def test_register(self):
         config_file = '../config.json'
         config = Client.Config(config_file)
