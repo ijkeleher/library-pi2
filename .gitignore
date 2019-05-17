@@ -8,3 +8,4 @@ master-pi/venv
 .venv
 /.vscode
 master-pi/.vscode
+*venv
