@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/inki/PIOT-A2/master-pi/venv"
+VIRTUAL_ENV="/Users/inki/Downloads/PIoT_TL8_code/PIoT_TL8_code/Exercise2_flask/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

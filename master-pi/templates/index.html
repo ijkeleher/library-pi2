@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-   <head>
-      <title>Library Admin Panel</title>
-   </head>
-   <body>
-   <h1>{{ motd }}</h1>
-   <h3> The time is {{ time }}</h3> 
-   </body>
+    <head>
+        <title>Person</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Person ID</th>
+                <th>Name</th>
+            </tr>
+            {%for person in people%}
+                <tr>
+                    <td>{{person.PersonID}}</td>
+                    <td>{{person.Name}}</td>
+                </tr>
+            {%endfor%}
+        </table>
+    </body>
 </html>

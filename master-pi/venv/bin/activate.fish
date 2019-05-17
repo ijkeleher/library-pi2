@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/inki/PIOT-A2/master-pi/venv"
+set -gx VIRTUAL_ENV "/Users/inki/Downloads/PIoT_TL8_code/PIoT_TL8_code/Exercise2_flask/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
