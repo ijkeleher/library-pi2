@@ -13,5 +13,5 @@ Use dropdown to switch between python-requests and curl format for GET/POST/PUT/
 
 ## Activate flask app for hot reload (dev environment)
     $ export FLASK_ENV=development 
-    $ export FLASK_APP=app.py
+    $ export FLASK_APP=flask_main.py
     $ flask run
