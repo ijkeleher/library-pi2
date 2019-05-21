@@ -310,7 +310,7 @@ class Main:
             elif selection == 4:
                 book = qrscan.scan()
                 print("Book returned: " + book)
-                
+
             else:
                 sys.exit(0)
 
