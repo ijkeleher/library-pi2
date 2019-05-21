@@ -7,7 +7,7 @@ import hashlib, binascii, os
 import getpass
 import re
 import socket
-from facial-recognition import recognise
+from facialrecognition import recognise
 from QRscan import qrscan
 
 class Menu:
