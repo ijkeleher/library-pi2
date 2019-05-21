@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-   <head>
-      <title>Sensor data </title>
-   </head>
-   <body>
-	<h1>Sensor Data </h1>
-    <h3> The temperature at {{ time }} is {{ temp }}°C</h3>
-   </body>
+    <head>
+        <title>Person</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Person ID</th>
+                <th>Name</th>
+            </tr>
+            {%for person in people%}
+                <tr>
+                    <td>{{person.PersonID}}</td>
+                    <td>{{person.Name}}</td>
+                </tr>
+            {%endfor%}
+        </table>
+    </body>
 </html>
