@@ -11,7 +11,6 @@ import socket
 
 class Menu:
 
-
     def displaymenu(self):
         print("""
         1.Login
@@ -58,19 +57,24 @@ class Menu:
         except ValueError:
             print("Invalid option!")
 
-    def get_login_detail(self):
+    def get_login_detail(self, email):
         """
-        Return
+        Param
+            if user choose to login with email
+        Return 
             username or email that user need to login with
         """
-        detail = str(input("Please enter your email addresss: "))
+        detail = ""
+        if email:
+            detail = str(input("Please enter your email address: "))
+        else:
+            detail = str(input("Please enter your username: "))
         return detail
 
 
 class Userdb:
 
     def __init__(self, config):
-
         self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
         self.email_addr = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
@@ -269,6 +273,8 @@ class Main:
         config = Config(configfile)
         db = Userdb(config)
 
+
+
         while True:
             selection = menu.getselection()
 
@@ -277,17 +283,18 @@ class Main:
                 if login_with_email == None:
                     continue
                 elif login_with_email:
-                    email = menu.get_login_detail()
+                    email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
-                        print("Login Successfully")
+                        # TODO: get username for use with remote menu
+                        self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
                 elif not login_with_email:
-                    username = menu.get_login_detail()
+                    username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
-                        print("Login Successfully")
+                        self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
 
