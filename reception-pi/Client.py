@@ -7,7 +7,8 @@ import hashlib, binascii, os
 import getpass
 import re
 import socket
-
+from facial-recognition import recognise
+from QRscan import qrscan
 
 class Menu:
 
@@ -15,7 +16,9 @@ class Menu:
         print("""
         1.Login
         2.Register new user
-        3.Exit
+        3.Face detect login
+        4.Quick return QR scan
+        5.Exit
         """)
 
     def getselection(self):
@@ -25,7 +28,7 @@ class Menu:
             try:
                 selection = int(input("Enter Selection: "))
 
-                if 4 > selection > 0:
+                if 6 > selection > 0:
                     return selection
 
             except ValueError:
@@ -300,6 +303,14 @@ class Main:
 
             elif selection == 2:
                 db.createuser()
+            elif selection == 3:
+                user = recognise.getuser()
+                self.RemoteMenu(user)
+
+            elif selection == 4:
+                book = qrscan.scan()
+                print("Book returned: " + book)
+                
             else:
                 sys.exit(0)
 
