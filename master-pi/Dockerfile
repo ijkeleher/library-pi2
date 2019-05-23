@@ -1,4 +1,6 @@
-FROM python:3.6
+FROM python:3.7-alpine
+
+RUN apk add --no-cache mariadb-dev build-base
 
 # The EXPOSE instruction indicates the ports on which a container # # will listen for connections
 # Since Flask apps listen to port 5000  by default, we expose it
