@@ -9,7 +9,9 @@ api = Blueprint("api", __name__)
 db = SQLAlchemy()
 ma = Marshmallow()
 
-# Declaring the model.
+#######################
+# DECLARING THE MODEL
+#######################
 
 # LmsUser class for the users of the library system
 
@@ -35,7 +37,7 @@ lmsUserSchema = LmsUserSchema()
 lmsUsersSchema = LmsUserSchema(many = True)
 
 
-# This class is for the book db
+# This class is for the book table
 
 class Book(db.Model):
     __tablename__ = "Book"
@@ -60,6 +62,37 @@ class BookSchema(ma.Schema):
 
 bookSchema = BookSchema()
 booksSchema = BookSchema(many = True)
+
+# This class is for the Borrowed table, relational table describing books borrowed by users
+
+class BookBorrowed(db.Model):
+    __tablename__ = "BookBorrowed"
+    BookBorrowedID = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    LmsUserID  =  db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
+    BookID  =  db.Column(db.Integer, db.ForeignKey('Book.BookID'))
+    Status = db.Column(db.Enum(Status))
+    BorrowedDate = db.Column(db.DateTime())
+    ReturnedDate = db.Column(db.DateTime())
+    def __init__(self, LmsUserID, BookID, Status, BorrowedDate, ReturnedDate, BookBorrowedID = None):
+        self.LmsUserID = LmsUserID
+        self.BookID = BookID
+        self.Status= Status
+        self.BorrowedDate = BorrowedDate
+        self.ReturnedDate = ReturnedDate
+
+#enum for the borrowing status of the book
+class Status(enum.Enum):
+    BORROWED = 'borrowed'
+    RETURNED = 'returned'
+
+class BookBorrowedSchema(ma.Schema):
+    # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
+    def __init__(self, strict = True, **kwargs):
+        super().__init__(strict = strict, **kwargs)
+    
+    class Meta:
+        # Fields to expose.
+        fields = ("BookBorrowedID", "LmsUserID", "BookID", "Status", "BorrowedDate", "ReturnedDate")
 
 #######################
 # FETCH ENDPOINTS
