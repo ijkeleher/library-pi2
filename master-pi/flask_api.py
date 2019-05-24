@@ -141,6 +141,13 @@ def getUser(id):
 
     return lmsUserSchema.jsonify(user)
 
+# Endpoint to fetch specific single record of a book loan
+@api.route("/bookborrowed/<id>", methods = ["GET"])
+def getBookBorrowed(id):
+    bookborrowed = BookBorrowed.query.get(id)
+
+    return bookBorrowedSchema.jsonify(bookborrowed)
+
 #######################
 # INSERTION ENDPOINTS
 #######################
@@ -223,6 +230,23 @@ def userUpdate(id):
     db.session.commit()
 
     return bookSchema.jsonify(lmsUser)
+
+# Endpoint to update book loan record (for returning book)
+@api.route("/bookborrowed/<id>", methods = ["PUT"])
+def bookBorrowedUpdate(id):
+    bookBorrowed = BookBorrowed.query.get(id)
+
+    returneddate = datetime.now()
+    status = "returned"
+
+
+    bookBorrowed.ReturnedDate = returneddate
+    bookBorrowed.Status = status
+
+    db.session.commit()
+
+    return bookBorrowedSchema.jsonify(bookBorrowed)
+
 
 #######################
 # DELETION ENDPOINTS
