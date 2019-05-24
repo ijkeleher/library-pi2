@@ -5,13 +5,13 @@
     <body>
         <table>
             <tr>
-                <th>Person ID</th>
-                <th>Name</th>
+                <th>BookID</th>
+                <th>Title</th>
             </tr>
-            {%for person in people%}
+            {%for book in books%}
                 <tr>
-                    <td>{{person.PersonID}}</td>
-                    <td>{{person.Name}}</td>
+                    <td>{{book.BookID}}</td>
+                    <td>{{book.Title}}</td>
                 </tr>
             {%endfor%}
         </table>
