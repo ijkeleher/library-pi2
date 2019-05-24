@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-import os, requests, json
+import os, requests, json, enum
 from flask import current_app as app
 
 api = Blueprint("api", __name__)
@@ -44,7 +44,7 @@ class Book(db.Model):
     BookID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     Title = db.Column(db.Text)
     Author = db.Column(db.Text)
-    PublishedDate = db.Column(db.Text)
+    PublishedDate = db.Column(db.DateTime)
     def __init__(self, Title, Author, PublishedDate, BookID = None):
         self.BookID = BookID
         self.Title = Title
@@ -63,6 +63,11 @@ class BookSchema(ma.Schema):
 bookSchema = BookSchema()
 booksSchema = BookSchema(many = True)
 
+#enum for the borrowing status of the book
+class Status_Enum(enum.Enum):
+    BORROWED = 'borrowed'
+    RETURNED = 'returned'
+
 # This class is for the Borrowed table, relational table describing books borrowed by users
 
 class BookBorrowed(db.Model):
@@ -70,7 +75,7 @@ class BookBorrowed(db.Model):
     BookBorrowedID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     LmsUserID  =  db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
     BookID  =  db.Column(db.Integer, db.ForeignKey('Book.BookID'))
-    Status = db.Column(db.Enum(Status))
+    Status = db.Column(db.Enum(Status_Enum))
     BorrowedDate = db.Column(db.DateTime())
     ReturnedDate = db.Column(db.DateTime())
     def __init__(self, LmsUserID, BookID, Status, BorrowedDate, ReturnedDate, BookBorrowedID = None):
@@ -79,11 +84,6 @@ class BookBorrowed(db.Model):
         self.Status= Status
         self.BorrowedDate = BorrowedDate
         self.ReturnedDate = ReturnedDate
-
-#enum for the borrowing status of the book
-class Status(enum.Enum):
-    BORROWED = 'borrowed'
-    RETURNED = 'returned'
 
 class BookBorrowedSchema(ma.Schema):
     # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
