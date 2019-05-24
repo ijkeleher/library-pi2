@@ -31,13 +31,13 @@ class Facedetect:
             for (x, y, w, h) in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            face_file_name = "dataset/chris/img.png"
+            face_file_name = "dataset/chrisOLD/img.png"
             roi_color = frame[y:y + h, x:x + w]
             cv2.imwrite(face_file_name, roi_color)
 
-            src = cv2.imread("dataset/chris/img.png", cv2.IMREAD_COLOR)
+            src = cv2.imread("dataset/chrisOLD/img.png", cv2.IMREAD_COLOR)
             hist1 = cv2.calcHist([src], [0], None, [256], [0, 256])
-            src0 = cv2.imread("dataset/chris/00000.png", cv2.IMREAD_COLOR)
+            src0 = cv2.imread("dataset/chrisOLD/00000.png", cv2.IMREAD_COLOR)
             hist2 = cv2.calcHist([src0], [0], None, [256], [0, 256])
 
             sc0 = cv2.compareHist(hist1, hist2, cv2.HISTCMP_BHATTACHARYYA)

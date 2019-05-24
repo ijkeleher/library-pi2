@@ -69,7 +69,7 @@ while True:
 	# if the `k` key was pressed, write the *original* frame to disk
 	# so we can later process it and use it for face recognition
 	if key == ord("k"):
-		p = os.path.sep.join(['dataset/chris', "{}.png".format(
+		p = os.path.sep.join(['dataset/chrisOLD', "{}.png".format(
 			str(total).zfill(5))])
 		cv2.imwrite(p, orig)
 		total += 1
