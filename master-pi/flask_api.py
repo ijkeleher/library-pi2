@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os, requests, json, enum
 from flask import current_app as app
+from datetime import datetime
 
 api = Blueprint("api", __name__)
 
@@ -65,8 +66,8 @@ booksSchema = BookSchema(many = True)
 
 #enum for the borrowing status of the book
 class Status_Enum(enum.Enum):
-    BORROWED = 'borrowed'
-    RETURNED = 'returned'
+    BORROWED = "borrowed"
+    RETURNED = "returned"
 
 # This class is for the Borrowed table, relational table describing books borrowed by users
 
@@ -75,13 +76,14 @@ class BookBorrowed(db.Model):
     BookBorrowedID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     LmsUserID  =  db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
     BookID  =  db.Column(db.Integer, db.ForeignKey('Book.BookID'))
-    Status = db.Column(db.Enum(Status_Enum))
+    #Status = db.Column(db.Enum(Status_Enum))
+    Status = db.Column(db.Text)
     BorrowedDate = db.Column(db.DateTime())
-    ReturnedDate = db.Column(db.DateTime())
+    ReturnedDate = db.Column(db.DateTime(), nullable=True)
     def __init__(self, LmsUserID, BookID, Status, BorrowedDate, ReturnedDate, BookBorrowedID = None):
         self.LmsUserID = LmsUserID
         self.BookID = BookID
-        self.Status= Status
+        self.Status = Status
         self.BorrowedDate = BorrowedDate
         self.ReturnedDate = ReturnedDate
 
@@ -93,6 +95,9 @@ class BookBorrowedSchema(ma.Schema):
     class Meta:
         # Fields to expose.
         fields = ("BookBorrowedID", "LmsUserID", "BookID", "Status", "BorrowedDate", "ReturnedDate")
+
+bookBorrowedSchema = BookBorrowedSchema()
+booksBorrowedSchema = BookBorrowedSchema(many = True)
 
 #######################
 # FETCH ENDPOINTS
@@ -111,6 +116,14 @@ def getBooks():
 def getUsers():
     users = LmsUser.query.all()
     result = lmsUsersSchema.dump(users)
+
+    return jsonify(result.data)
+
+# Endpoint to show all book loan records
+@api.route("/bookborrowed", methods = ["GET"])
+def getBooksBorrowed():
+    booksborrowed = BookBorrowed.query.all()
+    result = booksBorrowedSchema.dump(booksborrowed)
 
     return jsonify(result.data)
 
@@ -158,6 +171,23 @@ def addUser():
     db.session.commit()
 
     return lmsUserSchema.jsonify(newLmsUser)
+
+# Endpoint to record the borrowing of a book.
+@api.route("/bookborrowed", methods = ["POST"])
+def addBookBorrowed():
+    lmsuserid = request.json["lmsuserid"]
+    bookid = request.json["bookid"]
+    borroweddate = datetime.now()
+    #this is where the enum class defined above the bookborrowed class comes in
+    #status = Status_Enum(Status_Enum.BORROWED)
+    status = "borrowed"
+    newBookBorrowed = BookBorrowed(LmsUserID = lmsuserid, BookID = bookid, 
+    Status = status, BorrowedDate = borroweddate, ReturnedDate = None)
+
+    db.session.add(newBookBorrowed)
+    db.session.commit()
+
+    return bookBorrowedSchema.jsonify(newBookBorrowed)
 
 #######################
 # UPDATE ENDPOINTS
