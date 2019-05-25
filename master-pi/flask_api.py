@@ -293,6 +293,19 @@ def bookDelete(id):
 
     return bookSchema.jsonify(book)
 
+#Endpoint to delete a book via form
+@api.route("/deletebookform", methods=["POST"])
+def deleteBookForm():
+    #grab id data from form
+    id = request.form.get('bookid')
+    #grab book by id
+    book = Book.query.get(id)
+    #delete from db
+    db.session.delete(book)
+    db.session.commit()
+
+    return bookSchema.jsonify(book)
+    
 # Endpoint to delete a user.
 @api.route("/user/<id>", methods = ["DELETE"])
 def userDelete(id):
