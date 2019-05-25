@@ -247,6 +247,33 @@ def bookUpdate(id):
 
     return bookSchema.jsonify(book)
 
+# Endpoint to update book via form
+@api.route("/editbookform", methods=["POST"])
+def editBookForm():
+    #grab data from form fields
+    id = request.form.get('bookid')
+    title = request.form.get('title')
+    author = request.form.get('author')
+    publisheddate = request.form.get('publisheddate')
+    isbn = request.form.get('isbn')
+
+    #grab book by id
+    book = Book.query.get(id)
+
+    #update fields
+    if(title):
+        book.Title = title
+    if(author):
+        book.Author = author
+    if(publisheddate):
+        book.PublishedDate = publisheddate
+    if(isbn):
+        book.ISBN = isbn
+
+    db.session.commit()
+
+    return "Book Succesfully Updated"
+
 # Endpoint to update a user.
 @api.route("/user/<id>", methods = ["PUT"])
 def userUpdate(id):
