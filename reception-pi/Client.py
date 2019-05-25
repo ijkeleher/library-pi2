@@ -98,6 +98,12 @@ class Userdb:
                 print("Error: invalid username")
                 continue
 
+            # check if username is duplicate
+            existed = self.exist_info(username, False)
+            if existed:
+                print("Username already taken!\n")
+                continue
+
             passwordraw = getpass.getpass("Enter Password: ")
             confirm_password = getpass.getpass("Confirm Password: ")
 
@@ -122,6 +128,12 @@ class Userdb:
                 print("Error: invalid email ")
                 continue
 
+            # check if email is duplicate
+            existed = self.exist_info(email, True)
+            if existed:
+                print("Email exist already!\n")
+                continue
+
             inputvalid = True
 
         cursor = self.__conn.cursor()
@@ -131,6 +143,25 @@ class Userdb:
         cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)", params)
 
         self.__conn.commit()
+
+    def exist_info(self, info, email):
+        """
+        check if username already exist to prevent duplicate username
+        Param:
+            info: info to register for new user
+            email: Trus when checking duplicate email, False for username
+        Return:
+            Ture if username existed already
+            False otherwise
+        """
+        cursor = self.__conn.cursor()
+        if not email:
+            cursor.execute("SELECT * FROM rpuser WHERE username = %s", [info])
+        else:
+            cursor.execute("SELECT * FROM rpuser WHERE email = %s", [info])
+
+        data = cursor.fetchall()
+        return len(data) != 0
 
     def loginvalid(self):
         pass
