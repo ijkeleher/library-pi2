@@ -8,7 +8,8 @@ import speech_recognition as sr
 import subprocess
 
 class Speech2Text:
-    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)"
+    # MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)"
+    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:1,0)"
 
     def record(self):
         # Set the device ID of the mic that we specifically want to use to avoid ambiguity
@@ -30,7 +31,7 @@ class Speech2Text:
 
             print("Say something!")
             try:
-                audio = r.listen(source, timeout = 1.5, phrase_time_limit = 0.5)
+                audio = r.listen(source, timeout = 1.5)
             except sr.WaitTimeoutError:
                 print("Listening timed out whilst waiting for phrase to start")
                 quit()
