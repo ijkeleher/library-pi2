@@ -77,20 +77,12 @@ class Main:
         self.host = '127.0.0.1' # Loopback for listening on
         self.port = 6969
 
-
-
-
-
-
-
     def main(self):
         print("Firing up!")
 
         session = SocketSession(self.host, self.port)
 
         session.Listen()
-
-         
 
 
 

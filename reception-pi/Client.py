@@ -218,8 +218,7 @@ class SocketSession:
         self.user = user
 
         # Connect
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-        self.sock.bind(('', self.port)) # bind to port
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))
 
         # Start by sending user info
