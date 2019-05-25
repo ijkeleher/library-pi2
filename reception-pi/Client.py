@@ -10,6 +10,15 @@ import socket
 from shutil import copy2
 from facialrecognition.recognise import Recognise
 
+from imutils.video import VideoStream
+from pyzbar import pyzbar
+import datetime
+import imutils
+import time
+import cv2
+import face_recognition
+import argparse
+import pickle
 
 class Menu:
 
@@ -24,7 +33,7 @@ class Menu:
             try:
                 selection = int(input("Enter Selection: "))
 
-                if 4 > selection > 0:
+                if 6 > selection > 0:
                     return selection
 
             except ValueError:
@@ -63,6 +72,45 @@ class Menu:
     def get_login_detail(self, email):
         """
         Get user login information, either email or username
+        Param
+            if user choose to login with email
+        Return 
+            username or email that user need to login with
+        """
+        detail = ""
+        if email:
+            detail = str(input("Please enter your email address: "))
+        else:
+            detail = str(input("Please enter your username: "))
+        return detail
+
+    def login_option(self):
+        """
+        Return:
+            True if user choose to login with email
+            Flase if user choose to login with username
+            None if user don't want to login
+        """
+
+        print("""
+        1. Login with email
+        2. Login with username
+        3. Back to previous menu
+        """)
+
+        try:
+            selection = int(input("Enter login option: "))
+            if selection == 1:
+                return True
+            elif selection == 2:
+                return False
+            elif selection == 3:
+                return None
+        except ValueError:
+            print("Invalid option!")
+
+    def get_login_detail(self, email):
+        """
         Param
             if user choose to login with email
         Return 
@@ -352,6 +400,16 @@ class Main:
 
             elif selection == 2:
                 db.createuser()
+            elif selection == 3:
+                recognise = Recognise()
+                user = recognise.getuser()
+                self.RemoteMenu(user)
+
+            elif selection == 4:
+                qrscan = QRscan()
+                book = qrscan.scan()
+                print("Book returned: " + book)
+
             else:
                 sys.exit(0)
 
