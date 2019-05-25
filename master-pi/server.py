@@ -36,7 +36,8 @@ class SocketSession:
                      + "Welcome! Would you like to\n" \
                      + "1. Search the book catalogue\n" \
                      + "2. Borrow\n" \
-                     + "3. Logout\n"
+                     + "3. QR Code Return Book\n" \
+                     + "4. Logout\n"
                 conn.sendall(bytes(menu, 'UTF-8')) 
 
 
@@ -50,6 +51,7 @@ class SocketSession:
                     user_choice = str(conn.recv(4096), 'utf-8')
                     print("Got "+user_choice+" from client")
 
+
                     if menu is 'main':
                         print("Processing main menu choice")
                         if user_choice is '1':
@@ -57,17 +59,23 @@ class SocketSession:
                         elif user_choice is '2':
                             response = 'What book would you like to borrow?'
                         elif user_choice is '3':
+                            response = 'QR_CODE_8192'
+                            menu = 'qr'
+                        elif user_choice is '4':
                             response = 'TERMINATE_MAGIC_8192'
                         else:
                             response = 'Invalid response, please try again :)'
-                        
-
+                    elif menu is 'qr':
+                        response = 'Book returned! Book = '+user_choice
+                        menu = 'main'
 
                     # Send back the menu
                     conn.sendall(bytes(response, 'UTF-8')) 
             except ValueError:
                 print("Connection terminated... Listening again")
             except BrokenPipeError:
+                print("Connection terminated... Listening again")
+            except ConnectionResetError:
                 print("Connection terminated... Listening again")
 
 

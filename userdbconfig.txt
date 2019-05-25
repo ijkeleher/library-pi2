@@ -10,7 +10,7 @@ quit
 
 mysql -u pi -p
 USE rpdb;
-CREATE TABLE rpuser (username VARCHAR, password VARCHAR, firstname VARCHAR, lastname VARCHAR, email VARCHAR);
+CREATE TABLE rpuser (username VARCHAR(128), password VARCHAR(128), firstname VARCHAR(128), lastname VARCHAR(128), email VARCHAR(128));
 quit
 
 pip3 install mysqlclient
