@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{book.BookID}}</td>
                     <td>{{book.Title}}</td>
-                    <td>{{book.Author}</td>
+                    <td>{{book.Author}}</td>
                     <td>{{book.PublishedDate}}</td>
                     <td>{{book.ISBN}}</td>
 
@@ -46,7 +46,7 @@
         {%endfor%}
         </table>
 
-        <h2>Add New Library Book</h2>
+        <h2>Add new Book to Library Catalogue</h2>
       <form action = "http://localhost:5000/addbookform" method = "POST">
          <p>Title <input type = "text" name = "title" /></p>
          <p>Author <input type = "text" name = "author" /></p>
@@ -54,6 +54,14 @@
          <p>ISBN <input type ="text" name = "isbn" /></p>
          <p><input type = "submit" value = "submit" /></p>
       </form>
+
+      <h2>Delete Book from Catalogue</h2>
+      <form action = "http://localhost:5000/deletebookform" method = "POST">
+         <p>Book ID <input type = "text" name = "bookid" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+      
 
     </body>
 </html>
