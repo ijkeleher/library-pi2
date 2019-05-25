@@ -9,6 +9,7 @@ import re
 import socket
 from shutil import copy2
 from facialrecognition.recognise import Recognise
+from speech import Speech2Text
 
 from imutils.video import VideoStream
 from pyzbar import pyzbar
@@ -270,28 +271,45 @@ class SocketSession:
 
     def ConsoleSession(self):
 
-        qrcase = False
+        excase = False
 
         while True:
            
-            if not qrcase:
+            if not excase:
                 # Get some user input
                 inp = input("Please enter your response: ")
             
                 # Shoot it off to the server
-                self.sock.sendall(bytes(inp, 'UTF-8'))           
+                self.sock.sendall(bytes(inp, 'UTF-8'))
             
-            qrcase = False
+            excase = False
 
             # Get the response
             response = str(self.sock.recv(4096), 'utf-8')
+            if 'Please enter a book title' in response:
+                selection = int(input("Please select searching method:\n" +
+                    "1. Input book detail\n" +
+                    "2. Voice search\n"))
+                if selection == 1:
+                    book_name = input("Book name: ")
+                    self.sock.sendall(bytes(book_name, 'UTF-8'))
+                elif selection == 2:
+                    print("Listening...\n")
+                    speech = Speech2Text()
+                    book_name = speech.record()
+                    if book_name is None:
+                        book_name = "THISISNOTGONNAMATCHANYTHING"
+                    self.sock.sendall(bytes(book_name, 'UTF-8'))
+                    
+                excase = True
+
             if 'QR_CODE_8192' in response:
                 print("QR CODE Scanner\n")
                 qrcode = QRscan()
                 book_code = qrcode.scan()
                 print("="*20+"\n"+str(book_code)+"\n"+"="*20+"\n")
                 self.sock.sendall(bytes(book_code, 'utf-8'))
-                qrcase = True
+                excase = True
                 
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")
