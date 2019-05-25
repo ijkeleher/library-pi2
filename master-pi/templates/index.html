@@ -1,27 +1,59 @@
 <!DOCTYPE html>
     <head>
         <title>Library Admin Panel</title>
+        <style>
+                table, th, td {
+                  border: 1px solid black;
+                }
+                </style>
     </head>
     <body>
+        <h2>Library Catalogue</h2>
         <table>
             <tr>
                 <th>BookID</th>
                 <th>Title</th>
+                <th>Author</th>
+                <th>PublishedDate</th>
+                <th>ISBN</th>
             </tr>
             {%for book in books%}
                 <tr>
                     <td>{{book.BookID}}</td>
                     <td>{{book.Title}}</td>
+                    <td>{{book.Author}</td>
                     <td>{{book.PublishedDate}}</td>
+                    <td>{{book.ISBN}}</td>
+
                 </tr>
             {%endfor%}
         </table>
-
+        <br />
+        <h2>Library Members</h2>
         <table>
             <tr>
                 <th>UserID</th>
+                <th>UserName</th>
                 <th>Name</th>
             </tr>
+        </tr>
+        {%for user in users%}
+            <tr>
+                <td>{{user.LmsUserID}}</td>
+                <td>{{user.UserName}}</td>
+                <td>{{user.Name}}</td>
+            </tr>
+        {%endfor%}
         </table>
+
+        <h2>Add New Library Book</h2>
+      <form action = "http://localhost:5000/addbookform" method = "POST">
+         <p>Title <input type = "text" name = "title" /></p>
+         <p>Author <input type = "text" name = "author" /></p>
+         <p>Date Published <input type = "text" name = "publisheddate" /></p>
+         <p>ISBN <input type ="text" name = "isbn" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
     </body>
 </html>
