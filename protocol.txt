@@ -1,7 +1,0 @@
-Client -> Connects to master -> Master
-Client -> Sends auth user info to master 1024-> Master
-Client <- Send main menu to client 4096 <- Master
-Loop:
-	Client -> Sends choice to Master 1024 -> Master
-	Master <- Sends reponse to User 4096 <- Master
-	# If reponse is 'TERMINATE', break the loop

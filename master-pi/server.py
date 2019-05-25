@@ -75,27 +75,27 @@ class Config:
 
 
 class SocketSession:
-	
+
 	def __init__(self, host, port, db):
 		self.host = host
 		self.port = port
 		self.db = db
-	
+
 
 	def Listen(self):
 		print("Running server on " + self.host+":"+str(self.port))
-	  
+
 
 		# Connect
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.sock.bind((self.host, self.port))
 		self.sock.listen()
 
-		
+
 		# Don't worry about threading as only one reception pi for moment
 		while True:
 			try:
-				# Get the connection 
+				# Get the connection
 				conn, addr = self.sock.accept()
 				print("Got a connection from "+str(addr))
 
@@ -107,8 +107,9 @@ class SocketSession:
 					 + "Welcome! Would you like to\n" \
 					 + "1. Search the book catalogue\n" \
 					 + "2. Borrow\n" \
-					 + "3. Logout\n"
-				conn.sendall(bytes(menutext, 'UTF-8')) 
+					 + "3. QR Code Return Book\n" \
+					 + "4. Logout\n"
+				conn.sendall(bytes(menutext, 'UTF-8'))
 
 
 				menu = 'main'
@@ -129,33 +130,41 @@ class SocketSession:
 						elif user_choice is '2':
 							response = 'What book would you like to borrow?'
 						elif user_choice is '3':
+							response = 'QR_CODE_8192'
+							menu = 'qr'
+						elif user_choice is '4':
 							response = 'TERMINATE_MAGIC_8192'
 						else:
 							response = 'Invalid response, please try again :)'
 					elif menu is 'book':
 						response = 'Found books:\n'
 
-						
+
 						books = self.db.search(user_choice, "author")
-						
+
 						if books is '':
 							results = "No books found :^( sorry fam\n"
 						else:
 							for book in books:
 								response += str(book[1]) + " by " + str(book[2]) + " ISBN: " + str(book[4])+"\n"
-						
-						
+
+
 						menu = 'main'
 						response += "\nReturning to main menu\n"
 						response += menutext
-						
+					elif menu is 'qr':
+						response = 'Book returned! Book = '+user_choice
+						menu = 'main'
+
 
 
 					# Send back the menu
-					conn.sendall(bytes(response, 'UTF-8')) 
+					conn.sendall(bytes(response, 'UTF-8'))
 			except ValueError:
 				print("Connection terminated... Listening again")
 			except BrokenPipeError:
+				print("Connection terminated... Listening again")
+			except ConnectionResetError:
 				print("Connection terminated... Listening again")
 
 
@@ -175,7 +184,7 @@ class Main:
 		config = Config(configfile)
 		db = Clouddb(config)
 		print("Connected to cloud SQL instance!")
-		
+
 
 		session = SocketSession(self.host, self.port, db)
 
