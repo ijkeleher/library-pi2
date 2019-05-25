@@ -84,45 +84,6 @@ class Menu:
             detail = str(input("Please enter your username: "))
         return detail
 
-    def login_option(self):
-        """
-        Return:
-            True if user choose to login with email
-            Flase if user choose to login with username
-            None if user don't want to login
-        """
-
-        print("""
-        1. Login with email
-        2. Login with username
-        3. Back to previous menu
-        """)
-
-        try:
-            selection = int(input("Enter login option: "))
-            if selection == 1:
-                return True
-            elif selection == 2:
-                return False
-            elif selection == 3:
-                return None
-        except ValueError:
-            print("Invalid option!")
-
-    def get_login_detail(self, email):
-        """
-        Param
-            if user choose to login with email
-        Return 
-            username or email that user need to login with
-        """
-        detail = ""
-        if email:
-            detail = str(input("Please enter your email address: "))
-        else:
-            detail = str(input("Please enter your username: "))
-        return detail
-
 
 class Userdb:
 
