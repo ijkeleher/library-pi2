@@ -45,6 +45,30 @@
             </tr>
         {%endfor%}
         </table>
+        <br />
+
+        <h2>Books on Loan</h2>
+        <table>
+            <tr>
+                <th>BookBorrowedID</th>
+                <th>BookID</th>
+                <th>BorrowedDate</th>
+                <th>LmsUserID</th>
+                <th>ReturnedDate</th>
+                <th>Status</th>
+            </tr>
+        </tr>
+        {%for loan in loans%}
+            <tr>
+                <td>{{loan.BookBorrowedID}}</td>
+                <td>{{loan.BookID}}</td>
+                <td>{{loan.BorrowedDate}}</td>
+                <td>{{loan.LmsUserID}}</td>
+                <td>{{loan.ReturnedDate}}</td>
+                <td>{{loan.Status}}</td>
+            </tr>
+        {%endfor%}
+        </table>
 
         <h2>Add new Book to Library Catalogue</h2>
       <form action = "http://localhost:5000/addbookform" method = "POST">

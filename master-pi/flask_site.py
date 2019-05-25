@@ -15,4 +15,8 @@ def index():
     users_response = requests.get("http://127.0.0.1:5000/user")
     users_data = json.loads(users_response.text)
 
-    return render_template("index.html", books = data, users = users_data)
+    loan_response = requests.get("http://127.0.0.1:5000/bookborrowed")
+    loan_data = json.loads(loan_response.text)
+
+
+    return render_template("index.html", books = data, users = users_data, loans = loan_data)
