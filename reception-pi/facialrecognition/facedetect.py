@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from imutils.video import VideoStream
 import imutils
 import time
