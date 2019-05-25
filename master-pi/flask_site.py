@@ -12,4 +12,7 @@ def index():
     response = requests.get("http://127.0.0.1:5000/book")
     data = json.loads(response.text)
 
-    return render_template("index.html", books = data)
+    users_response = requests.get("http://127.0.0.1:5000/user")
+    users_data = json.loads(users_response.text)
+
+    return render_template("index.html", books = data, users = users_data)

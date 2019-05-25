@@ -46,11 +46,14 @@ class Book(db.Model):
     Title = db.Column(db.Text)
     Author = db.Column(db.Text)
     PublishedDate = db.Column(db.DateTime)
-    def __init__(self, Title, Author, PublishedDate, BookID = None):
+    ISBN = db.Column(db.Text)
+
+    def __init__(self, Title, Author, PublishedDate, ISBN, BookID = None):
         self.BookID = BookID
         self.Title = Title
         self.Author = Author
         self.PublishedDate = PublishedDate
+        self.ISBN = ISBN
 
 class BookSchema(ma.Schema):
     # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
@@ -59,7 +62,7 @@ class BookSchema(ma.Schema):
     
     class Meta:
         # Fields to expose.
-        fields = ("BookID", "Title", "Author", "PublishedDate")
+        fields = ("BookID", "Title", "Author", "PublishedDate", "ISBN")
 
 bookSchema = BookSchema()
 booksSchema = BookSchema(many = True)
@@ -158,8 +161,13 @@ def addBook():
     title = request.json["title"]
     author = request.json["author"]
     publisheddate = request.json["publisheddate"]
+    isbn = request.json["isbn"]
 
-    newBook = Book(Title = title, Author=author, PublishedDate=publisheddate)
+    newBook = Book(
+        Title = title, 
+        Author = author, 
+        PublishedDate = publisheddate, 
+        ISBN = isbn)
 
     db.session.add(newBook)
     db.session.commit()
@@ -207,10 +215,13 @@ def bookUpdate(id):
     title = request.json["title"]
     author = request.json["author"]
     publisheddate = request.json["publisheddate"]
+    isbn = request.json["isbn"]
+
 
     book.Title = title
     book.Author = author
     book.PublishedDate = publisheddate
+    book.ISBN = isbn
 
     db.session.commit()
 

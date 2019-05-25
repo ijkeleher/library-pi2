@@ -1,6 +1,6 @@
 <!DOCTYPE html>
     <head>
-        <title>Person</title>
+        <title>Library Admin Panel</title>
     </head>
     <body>
         <table>
@@ -12,8 +12,16 @@
                 <tr>
                     <td>{{book.BookID}}</td>
                     <td>{{book.Title}}</td>
+                    <td>{{book.PublishedDate}}</td>
                 </tr>
             {%endfor%}
+        </table>
+
+        <table>
+            <tr>
+                <th>UserID</th>
+                <th>Name</th>
+            </tr>
         </table>
     </body>
 </html>
