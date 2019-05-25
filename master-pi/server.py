@@ -65,7 +65,9 @@ class SocketSession:
 
                     # Send back the menu
                     conn.sendall(bytes(response, 'UTF-8')) 
-            except:
+            except ValueError:
+                print("Connection terminated... Listening again")
+            except BrokenPipeError:
                 print("Connection terminated... Listening again")
 
 
@@ -77,20 +79,12 @@ class Main:
         self.host = '127.0.0.1' # Loopback for listening on
         self.port = 6969
 
-
-
-
-
-
-
     def main(self):
         print("Firing up!")
 
         session = SocketSession(self.host, self.port)
 
         session.Listen()
-
-         
 
 
 
