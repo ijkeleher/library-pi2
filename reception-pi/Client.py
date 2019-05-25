@@ -33,7 +33,7 @@ class Menu:
             try:
                 selection = int(input("Enter Selection: "))
 
-                if 6 > selection > 0:
+                if 4 > selection > 0:
                     return selection
 
             except ValueError:
@@ -269,17 +269,30 @@ class SocketSession:
         return menu
 
     def ConsoleSession(self):
-       
+
+        qrcase = False
+
         while True:
            
-            # Get some user input
-            inp = input("Please enter your response: ")
+            if not qrcase:
+                # Get some user input
+                inp = input("Please enter your response: ")
             
-            # Shoot it off to the server
-            self.sock.sendall(bytes(inp, 'UTF-8'))
-           
+                # Shoot it off to the server
+                self.sock.sendall(bytes(inp, 'UTF-8'))           
+            
+            qrcase = False
+
             # Get the response
             response = str(self.sock.recv(4096), 'utf-8')
+            if 'QR_CODE_8192' in response:
+                print("QR CODE Scanner\n")
+                qrcode = QRscan()
+                book_code = qrcode.scan()
+                print("="*20+"\n"+str(book_code)+"\n"+"="*20+"\n")
+                self.sock.sendall(bytes(book_code, 'utf-8'))
+                qrcase = True
+                
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")
                 print("Returning to main menu...\n\n")
@@ -288,7 +301,33 @@ class SocketSession:
             print(response)
 
 
+class QRscan:
 
+    def scan(self):
+
+        # initialize the video stream and allow the camera sensor to warm up
+        print("[INFO] starting video stream...")
+        vs = VideoStream(src=0).start()
+        time.sleep(2.0)
+
+        found = set()
+
+        # loop over the frames from the video stream
+        while True:
+            # grab the frame from the threaded video stream and resize it to
+            # have a maximum width of 400 pixels
+            frame = vs.read()
+            frame = imutils.resize(frame, width=400)
+
+            # find the barcodes in the frame and decode each of the barcodes
+            barcodes = pyzbar.decode(frame)
+
+            # loop over the detected barcodes
+            for barcode in barcodes:
+                # the barcode data is a bytes object so we convert it to a string
+                barcodeData = barcode.data.decode("utf-8")
+                barcodeType = barcode.type
+                return barcodeData
 
 
 class Main:
@@ -333,7 +372,6 @@ class Main:
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
-                        # TODO: get username for use with remote menu
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
@@ -361,16 +399,12 @@ class Main:
 
             elif selection == 2:
                 db.createuser()
-            elif selection == 3:
-                recognise = Recognise()
-                user = recognise.getuser()
-                self.RemoteMenu(user)
-
-            elif selection == 4:
-                qrscan = QRscan()
-                book = qrscan.scan()
-                print("Book returned: " + book)
-
+            # elif selection == 3:
+            #     sys.exit(0)
+            # elif selection == 4:
+            #     qrscan = QRscan()
+            #     book = qrscan.scan()
+            #     print("Book returned: " + book)
             else:
                 sys.exit(0)
 
