@@ -173,7 +173,7 @@ def addBookForm():
     db.session.add(newBook)
     db.session.commit()
 
-    return bookSchema.jsonify(newBook)
+    return "Book: " + str(title) + " Sucessfully Added"
 
 # Endpoint to create new book.
 @api.route("/book", methods = ["POST"])
@@ -304,7 +304,7 @@ def deleteBookForm():
     db.session.delete(book)
     db.session.commit()
 
-    return bookSchema.jsonify(book)
+    return 'Book Successfully Deleted'
     
 # Endpoint to delete a user.
 @api.route("/user/<id>", methods = ["DELETE"])
