@@ -13,11 +13,7 @@ class Menu:
 
 
     def displaymenu(self):
-        print("""
-        1.Login
-        2.Register new user
-        3.Exit
-        """)
+        print("1.Login\n2.Register new user\n3.Exit")
 
     def getselection(self):
         while True:
@@ -32,34 +28,39 @@ class Menu:
             except ValueError:
                 print("Error: enter valid selection")
                 continue
+            except EOFError:
+                print("Invalid option!\n")
 
     def login_option(self):
         """
+        Login option menu for user to select method to login
         Return:
-            True if user choose to login with email
-            Flase if user choose to login with username
+            1 if user choose to login with email
+            2 if user choose to login with username
+            3 if user choose to login with facial recognition
             None if user don't want to login
         """
 
-        print("""
-        1. Login with email
-        2. Login with username
-        3. Back to previous menu
-        """)
+        print("1. Login with email\n2. Login with username\n3. Login with facial recognition\n4. Back to previous menu")
 
         try:
             selection = int(input("Enter login option: "))
             if selection == 1:
-                return True
+                return 1
             elif selection == 2:
-                return False
+                return 2
             elif selection == 3:
+                return 3
+            elif selection == 4:
                 return None
         except ValueError:
-            print("Invalid option!")
+            print("Invalid option!\n")
+        except EOFError:
+            print("Invalid option!\n")
 
     def get_login_detail(self, email):
         """
+        Get user login information, either email or username
         Param
             if user choose to login with email
         Return 
@@ -149,6 +150,7 @@ class Userdb:
 
     def login(self, detail, email_login):
         """
+        login at reception pi
         Param:
             detail: login detail, either username or email
             email_login: True if user choose to login with email, False if user choose to login with username
@@ -186,7 +188,7 @@ class Config:
             with open(filename) as data:
                 self.__conf = json.load(data)
         except EnvironmentError:
-            print("Can't open "+filename)
+            print("Can't open "+ filename)
 
     def getdbuser(self):
         return self.__conf['dbuser']
@@ -215,6 +217,7 @@ class SocketSession:
 
         # Connect
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        self.sock.bind(('', self.port)) # bind to port
         self.sock.connect((self.host, self.port))
 
         # Start by sending user info
@@ -261,7 +264,6 @@ class Main:
 
         main_menu = session.Connect(user)
 
-
         main_menu = str(main_menu, 'utf-8')
         print(main_menu)
 
@@ -281,12 +283,13 @@ class Main:
 
         while True:
             selection = menu.getselection()
+            facial_login = False
 
             if selection == 1:
                 login_with_email = menu.login_option()
-                if login_with_email == None:
+                if login_with_email == None: # when user choose not to login from login option menu
                     continue
-                elif login_with_email:
+                elif login_with_email == 1: # when user choose to login with email
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
@@ -294,13 +297,15 @@ class Main:
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
-                elif not login_with_email:
+                elif login_with_email == 2: # when user choose to login with username
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
                         self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
+                elif login_with_email == 3:
+                    print("Login with Facial Recognition")
 
             elif selection == 2:
                 db.createuser()
