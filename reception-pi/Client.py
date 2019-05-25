@@ -7,6 +7,8 @@ import hashlib, binascii, os
 import getpass
 import re
 import socket
+from shutil import copy2
+from facialrecognition.recognise import Recognise
 
 
 class Menu:
@@ -283,7 +285,6 @@ class Main:
 
         while True:
             selection = menu.getselection()
-            facial_login = False
 
             if selection == 1:
                 login_with_email = menu.login_option()
@@ -305,7 +306,11 @@ class Main:
                     else:
                         print("Username or password is not correct!")
                 elif login_with_email == 3:
-                    print("Login with Facial Recognition")
+                    print("Login with Facial Recognition....")
+                    # copy encoding file to current directory
+                    copy2('./facialrecognition/encodings.pickle', '.')
+                    recognise = Recognise()
+                    recognise.getuser()
 
             elif selection == 2:
                 db.createuser()

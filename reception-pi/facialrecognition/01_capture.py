@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # USAGE
 # With default parameter of user/id
 #     python3 01_capture.py -n default_user

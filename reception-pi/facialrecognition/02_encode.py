@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # USAGE
 # With default parameters
 #     python3 02_encode.py
