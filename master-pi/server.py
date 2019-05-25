@@ -65,7 +65,9 @@ class SocketSession:
 
                     # Send back the menu
                     conn.sendall(bytes(response, 'UTF-8')) 
-            except:
+            except ValueError:
+                print("Connection terminated... Listening again")
+            except BrokenPipeError:
                 print("Connection terminated... Listening again")
 
 
