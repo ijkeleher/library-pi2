@@ -310,7 +310,15 @@ class Main:
                     # copy encoding file to current directory
                     copy2('./facialrecognition/encodings.pickle', '.')
                     recognise = Recognise()
-                    recognise.getuser()
+                    name = recognise.getuser()
+                    valid_login = False
+                    if name != "Unknown":
+                        valid_login = True
+                    if valid_login:
+                        self.RemoteMenu(name)
+                    else:
+                        print("Login failed!")
+                    
 
             elif selection == 2:
                 db.createuser()
