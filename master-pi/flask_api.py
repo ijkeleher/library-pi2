@@ -155,6 +155,26 @@ def getBookBorrowed(id):
 # INSERTION ENDPOINTS
 #######################
 
+#Endpoint to create new book via form
+@api.route("/addbookform", methods=["POST"])
+def addBookForm():
+    #grab data from form fields
+    title = request.form.get('title')
+    author = request.form.get('author')
+    publisheddate = request.form.get('publisheddate')
+    isbn = request.form.get('isbn')
+    #create new book object
+    newBook = Book(
+        Title = title, 
+        Author = author, 
+        PublishedDate = publisheddate, 
+        ISBN = isbn)
+    #commit to db
+    db.session.add(newBook)
+    db.session.commit()
+
+    return bookSchema.jsonify(newBook)
+
 # Endpoint to create new book.
 @api.route("/book", methods = ["POST"])
 def addBook():
