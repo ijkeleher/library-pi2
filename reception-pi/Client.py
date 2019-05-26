@@ -9,6 +9,7 @@ import re
 import socket
 from shutil import copy2
 from facialrecognition.recognise import Recognise
+from speech import Speech2Text
 
 from imutils.video import VideoStream
 from pyzbar import pyzbar
@@ -270,28 +271,54 @@ class SocketSession:
 
     def ConsoleSession(self):
 
-        qrcase = False
+        excase = False
 
         while True:
            
-            if not qrcase:
+            if not excase:
                 # Get some user input
-                inp = input("Please enter your response: ")
+                inp = str(input("Please enter your response: "))
+                if not inp:
+                    inp = None
+                if inp is None:
+                    print("Invalid response!")
+                    continue
             
                 # Shoot it off to the server
-                self.sock.sendall(bytes(inp, 'UTF-8'))           
+                self.sock.sendall(bytes(inp, 'UTF-8'))
             
-            qrcase = False
+            excase = False
 
             # Get the response
             response = str(self.sock.recv(4096), 'utf-8')
+            if 'Please enter a book title' in response:
+                try:
+                    selection = int(input("Please select searching method:\n" +
+                        "1. Input book detail\n" +
+                        "2. Voice search\n"))
+                    if selection == 1:
+                        book_name = input("Book name: ")
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                    elif selection == 2:
+                        print("Listening...\n")
+                        speech = Speech2Text()
+                        book_name = speech.record()
+                        if book_name is None:
+                            book_name = "THISISNOTGONNAMATCHANYTHING"
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                except ValueError: # try catch for selection input
+                    print("Invalid Option")
+                    self.sock.sendall(bytes('THISISNOTGONNAMATCHANYTHING', 'UTF-8'))
+                    
+                excase = True
+
             if 'QR_CODE_8192' in response:
                 print("QR CODE Scanner\n")
                 qrcode = QRscan()
                 book_code = qrcode.scan()
                 print("="*20+"\n"+str(book_code)+"\n"+"="*20+"\n")
                 self.sock.sendall(bytes(book_code, 'utf-8'))
-                qrcase = True
+                excase = True
                 
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")
@@ -365,31 +392,31 @@ class Main:
             selection = menu.getselection()
 
             if selection == 1:
-                login_with_email = menu.login_option()
-                if login_with_email == None: # when user choose not to login from login option menu
+                login_method = menu.login_option()
+                if login_method == None: # when user choose not to login from login option menu
                     continue
-                elif login_with_email == 1: # when user choose to login with email
+                elif login_method == 1: # when user choose to login with email
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
-                elif login_with_email == 2: # when user choose to login with username
+                elif login_method == 2: # when user choose to login with username
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
                         self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
-                elif login_with_email == 3:
+                elif login_method == 3:
                     print("Login with Facial Recognition....")
                     # copy encoding file to current directory
                     copy2('./facialrecognition/encodings.pickle', '.')
                     recognise = Recognise()
                     name = recognise.getuser()
                     valid_login = False
-                    if name != "Unknown":
+                    if name is not "Unknown":
                         valid_login = True
                     if valid_login:
                         self.RemoteMenu(name)
@@ -399,12 +426,6 @@ class Main:
 
             elif selection == 2:
                 db.createuser()
-            # elif selection == 3:
-            #     sys.exit(0)
-            # elif selection == 4:
-            #     qrscan = QRscan()
-            #     book = qrscan.scan()
-            #     print("Book returned: " + book)
             else:
                 sys.exit(0)
 
