@@ -1,5 +1,13 @@
 #!/usr/bin/python3
 
+"""
+
+.. module: client
+
+.. moduleauthor:: Blaise Saunders and Boxuan Lu
+
+"""
+
 import binascii
 import getpass
 import hashlib
