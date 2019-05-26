@@ -1,30 +1,35 @@
 #!/usr/bin/env python3
 
 import unittest
-import Client
-from facialrecognition.recognise import Recognise
 from shutil import copy2
+from facialrecognition.recognise import Recognise
+import client
 
 
 class RPTest(unittest.TestCase):
+    """
+    Unit test for reception pi
+    Include two test: test local database connection and login
+    """
+
     def test_db_connection(self):
         """
         Unit test for local database connection on reception pi
         """
         config_file = '../config.json'
-        config = Client.Config(config_file)
-        db = Client.Userdb(config)
-        self.assertIsNotNone(db)
+        config = client.Config(config_file)
+        database = client.Userdb(config)
+        self.assertIsNotNone(database)
 
     def test_login(self):
         """
         Unit test for login function
         """
         config_file = '../config.json'
-        config = Client.Config(config_file)
-        db = Client.Userdb(config)
+        config = client.Config(config_file)
+        database = client.Userdb(config)
 
-        menu = Client.Menu()
+        menu = client.Menu()
 
         valid_login = False
         auth = True
@@ -33,15 +38,15 @@ class RPTest(unittest.TestCase):
         login_option = menu.login_option()
         if login_option == 1: # when login with email
             email = menu.get_login_detail(True)
-            valid_login = db.login(email, True)
+            valid_login = database.login(email, True)
         elif login_option == 2: # when login with username
             username = menu.get_login_detail(False)
-            valid_login = db.login(username, False)
+            valid_login = database.login(username, False)
         elif login_option == 3: # when login with facial recognize
             copy2('./facialrecognition/encodings.pickle', '.')
             recognize = Recognise()
             name = recognize.getuser()
-            if name is not "Unknown":
+            if name != "Unknown":
                 valid_login = True
         elif login_option == 4: # when choose not to login
             valid_login = False

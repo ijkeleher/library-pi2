@@ -72,7 +72,9 @@ class Menu:
             None if user don't want to login
         """
 
-        print("1. Login with email\n2. Login with username\n3. Login with facial recognition\n4. Back to previous menu")
+        print("1. Login with email\n2. Login with username"
+              + "\n3. Login with facial recognition"
+              + "\n4. Back to previous menu")
 
         try:
             selection = int(input("Enter login option: "))
@@ -95,7 +97,7 @@ class Menu:
 
         Param
             if user choose to login with email
-        Return 
+        Return
             username or email that user need to login with
         """
         detail = ""
@@ -119,8 +121,10 @@ class Userdb:
         Parma:
             config: local database config
         """
-        self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
-        self.email_addr = re.compile(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
+        self.__conn = MySQLdb.connect(
+            config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
+        self.email_addr = re.compile(
+            r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
     def createuser(self):
         """
@@ -181,7 +185,8 @@ class Userdb:
 
         params = (username, passwordhashed, firstname, lastname, email)
 
-        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)",
+        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) \
+             VALUES (%s,%s,%s,%s,%s)",
                        params)
 
         self.__conn.commit()
@@ -240,7 +245,8 @@ class Userdb:
         """
         salt = stored_password[:64]
         stored_password = stored_password[64:]
-        pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
+        pwdhash = hashlib.pbkdf2_hmac(
+            'sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
@@ -250,7 +256,8 @@ class Userdb:
 
         Param:
             detail: login detail, either username or email
-            email_login: True if user choose to login with email, False if user choose to login with username
+            email_login: True if user choose to login with \
+                email, False if user choose to login with username
         Return:
             True if login is valid
             False otherwise
@@ -387,10 +394,11 @@ class SocketSession:
             response = str(self.sock.recv(4096), 'utf-8')
             if 'Please enter a book title' in response:
                 try:
-                    selection = int(input("Please select searching method:\n" +
-                                          "1. Input book detail\n" +
-                                          "2. Voice search\n" +
-					  "Please enter your response: "))
+                    selection = int(input(
+                        "Please select searching method:\n" +
+                        "1. Input book detail\n" +
+                        "2. Voice search\n" +
+                        "Please enter your response: "))
                     if selection == 1:
                         book_name = input("Book name: ")
                         self.sock.sendall(bytes(book_name, 'UTF-8'))
@@ -481,7 +489,7 @@ class Main:
                     recognise = Recognise()
                     name = recognise.getuser()
                     valid_login = False
-                    if name is not "Unknown":
+                    if name != "Unknown":
                         valid_login = True
                     if valid_login:
                         self.RemoteMenu(name)
