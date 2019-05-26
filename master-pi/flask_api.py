@@ -49,6 +49,9 @@ ma = Marshmallow()
 # LmsUser class for the users of the library system
 
 class LmsUser(db.Model):
+    """
+    this class creates the user model, maps to USER table in database
+    """
     __tablename__= "LmsUser"
     LmsUserID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     UserName = db.Column(db.String(256), unique = True)
@@ -59,11 +62,14 @@ class LmsUser(db.Model):
         self.Name = Name
 
 class LmsUserSchema(ma.Schema):
+    """
+    LmsUserSchema sets up fields for model
+    """
     def __init__(self, strict = True, **kwargs):
         super().__init__(strict = strict, **kwargs)
     
     class Meta:
-        # Fields to expose.
+        """Fields to expose."""
         fields = ("LmsUserID", "Name", "UserName")
 
 lmsUserSchema = LmsUserSchema()
@@ -73,6 +79,9 @@ lmsUsersSchema = LmsUserSchema(many = True)
 # This class is for the book table
 
 class Book(db.Model):
+    """
+    Book class maps to BOOK table in db
+    """
     __tablename__ = "Book"
     BookID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     Title = db.Column(db.Text)
@@ -88,12 +97,15 @@ class Book(db.Model):
         self.ISBN = ISBN
 
 class BookSchema(ma.Schema):
+    """
+    BookSchema sets up fields for model
+    """
     # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
     def __init__(self, strict = True, **kwargs):
         super().__init__(strict = strict, **kwargs)
     
     class Meta:
-        # Fields to expose.
+        """Fields to expose"""
         fields = ("BookID", "Title", "Author", "PublishedDate", "ISBN")
 
 bookSchema = BookSchema()
@@ -101,12 +113,18 @@ booksSchema = BookSchema(many = True)
 
 #enum for the borrowing status of the book
 class Status_Enum(enum.Enum):
+    """
+    This class creates an enum object for mapping borrow/return status
+    """
     BORROWED = "borrowed"
     RETURNED = "returned"
 
 # This class is for the Borrowed table, relational table describing books borrowed by users
 
 class BookBorrowed(db.Model):
+    """
+    Bookborrowed class maps to BOOKBORROWED table in db
+    """
     __tablename__ = "BookBorrowed"
     BookBorrowedID = db.Column(db.Integer, primary_key = True, autoincrement = True)
     LmsUserID  =  db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
@@ -123,12 +141,15 @@ class BookBorrowed(db.Model):
         self.ReturnedDate = ReturnedDate
 
 class BookBorrowedSchema(ma.Schema):
+    """
+    Bookborrowed fields for model
+    """
     # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
     def __init__(self, strict = True, **kwargs):
         super().__init__(strict = strict, **kwargs)
     
     class Meta:
-        # Fields to expose.
+        """Fields to expose"""
         fields = ("BookBorrowedID", "LmsUserID", "BookID", "Status", "BorrowedDate", "ReturnedDate")
 
 bookBorrowedSchema = BookBorrowedSchema()
