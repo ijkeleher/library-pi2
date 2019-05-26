@@ -22,12 +22,27 @@ import argparse
 import pickle
 
 class Menu:
+    """
+    local client menu
+    provide function for user to login, register
+    """
 
 
     def displaymenu(self):
+        """
+        print out menu to console
+        """
         print("1.Login\n2.Register new user\n3.Exit")
 
     def getselection(self):
+        """
+        For user to make selection
+        Return:
+            selection: user's selection to interact to menu
+        except:
+            ValueError: when user enter non-digital or number beyond the range
+            EOFError: end of file error
+        """
         while True:
             self.displaymenu()
 
@@ -87,12 +102,24 @@ class Menu:
 
 
 class Userdb:
+    """
+    Local database store user's information
+    contains: username, salted password, firstname, lastname, email
+    """
 
     def __init__(self, config):
+        """
+        constructor
+        Parma:
+            config: local database config
+        """
         self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
         self.email_addr = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
     def createuser(self):
+        """
+        create user and insert new user to local database
+        """
 
         inputvalid = False
 
@@ -177,14 +204,30 @@ class Userdb:
         pass
 
     def hash_password(self, password):
-        """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+        """
+        convert plaintext password into encrypted password
+        Parma:
+            password: plaintext password
+        Return:
+            salted password
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
         salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
         pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
         return (salt + pwdhash).decode('ascii')
 
     def verify_password(self, stored_password, provided_password):
-        """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+        """
+        check if provided password match with stored password
+        Parma:
+            stored_password: salted password stored in database
+            provided_password: password that need to be compared with
+        Return:
+            True if two password match
+            False otherwise
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
         salt = stored_password[:64]
         stored_password = stored_password[64:]
         pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
@@ -225,6 +268,9 @@ class Userdb:
 
 
 class Config:
+    """
+    config for local environment
+    """
 
     def __init__(self, filename):
         try:
@@ -267,6 +313,9 @@ class Config:
 
 
 class SocketSession:
+    """
+    Socket session which allow reception-pi and master-pi communicate with each other
+    """
     
     def __init__(self, host, port):
         self.host = host
@@ -274,6 +323,13 @@ class SocketSession:
     
 
     def Connect(self, user):
+        """
+        connect to master pi using socket
+        Parma:
+            user: logged in user
+        Return:
+            menu for user to interact with
+        """
         print("Establishing connection to remote host @ " + self.host+":"+str(self.port))
       
         self.user = user
@@ -290,6 +346,9 @@ class SocketSession:
         return menu
 
     def ConsoleSession(self):
+        """
+        Console session allow user to interact with remote sessib
+        """
 
         excase = False
 
@@ -349,6 +408,9 @@ class SocketSession:
 
 
 class QRscan:
+    """
+    QR Code scanner
+    """
 
     def scan(self):
         """
