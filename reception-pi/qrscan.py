@@ -23,7 +23,7 @@ class QRscan:
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
 
-        found = set()
+        # found = set()
 
         # loop over the frames from the video stream
         while True:
@@ -39,7 +39,7 @@ class QRscan:
             for barcode in barcodes:
                 # the barcode data is a bytes object so we convert it to a string
                 barcodeData = barcode.data.decode("utf-8")
-                barcodeType = barcode.type
+                # barcodeType = barcode.type
                 return barcodeData
 
 
