@@ -387,7 +387,6 @@ class SocketSession:
                 print("QR CODE Scanner\n")
                 qrcode = QRscan()
                 book_code = qrcode.scan()
-                print("=" * 20 + "\n" + str(book_code) + "\n" + "=" * 20 + "\n")
                 self.sock.sendall(bytes(book_code, 'utf-8'))
                 excase = True
 
