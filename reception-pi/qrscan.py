@@ -38,7 +38,8 @@ class QRscan:
 
             # loop over the detected barcodes
             for barcode in barcodes:
-                # the barcode data is a bytes object so we convert it to a string
+                # the barcode data is a bytes object so we convert it to a
+                # string
                 barcode_data = barcode.data.decode("utf-8")
                 # barcodeType = barcode.type
                 return barcode_data

@@ -7,12 +7,15 @@
 import subprocess
 import speech_recognition as sr
 
+
 class Speech2Text:
     """
     voice function which convert voice into text
     """
-    # MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)" # laptop config
-    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:1,0)" # raspberry pi config
+    # MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)" # laptop
+    # config
+    # raspberry pi config
+    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:1,0)"
 
     def record(self):
         """
@@ -27,8 +30,10 @@ class Speech2Text:
 
             RequestError
         """
-        # Set the device ID of the mic that we specifically want to use to avoid ambiguity
-        for i, microphone_name in enumerate(sr.Microphone.list_microphone_names()):
+        # Set the device ID of the mic that we specifically want to use to
+        # avoid ambiguity
+        for i, microphone_name in enumerate(
+                sr.Microphone.list_microphone_names()):
             print(microphone_name)
             if microphone_name == self.MIC_NAME:
                 device_id = i
@@ -57,10 +62,13 @@ class Speech2Text:
             # for testing purposes, we're just using the default API key
             # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
             # instead of `r.recognize_google(audio)`
-            print("Google Speech Recognition thinks you said '{}'".format(recognize.recognize_google(audio)))
+            print(
+                "Google Speech Recognition thinks you said '{}'".format(
+                    recognize.recognize_google(audio)))
             book_name = recognize.recognize_google(audio)
             return book_name
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as error:
-            print("Could not request results from Google Speech Recognition service; {0}".format(error))
+            print(
+                "Could not request results from Google Speech Recognition service; {0}".format(error))

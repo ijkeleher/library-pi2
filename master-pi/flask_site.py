@@ -32,4 +32,8 @@ def index():
     loan_response = requests.get("http://127.0.0.1:5000/bookborrowed")
     loan_data = json.loads(loan_response.text)
 
-    return render_template("index.html", books=data, users=users_data, loans=loan_data)
+    return render_template(
+        "index.html",
+        books=data,
+        users=users_data,
+        loans=loan_data)

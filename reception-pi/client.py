@@ -122,7 +122,10 @@ class Userdb:
             config: local database config
         """
         self.__conn = MySQLdb.connect(
-            config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
+            config.gethostname(),
+            config.getdbuser(),
+            config.getdbpass(),
+            config.getdbname())
         self.email_addr = re.compile(
             r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
@@ -163,7 +166,11 @@ class Userdb:
             firstname = input("Enter First name: ")
             lastname = input("Enter Last name: ")
 
-            if re.fullmatch(chars, firstname) is None or re.fullmatch(chars, lastname) is None:
+            if re.fullmatch(
+                    chars,
+                    firstname) is None or re.fullmatch(
+                    chars,
+                    lastname) is None:
                 print("Error: invalid first or last name ")
                 continue
 
@@ -185,9 +192,9 @@ class Userdb:
 
         params = (username, passwordhashed, firstname, lastname, email)
 
-        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) \
-             VALUES (%s,%s,%s,%s,%s)",
-                       params)
+        cursor.execute(
+            "INSERT INTO rpuser(username, password, firstname, lastname, email) \
+             VALUES (%s,%s,%s,%s,%s)", params)
 
         self.__conn.commit()
 
@@ -226,7 +233,8 @@ class Userdb:
         Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
         """
         salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
+        pwdhash = hashlib.pbkdf2_hmac(
+            'sha512', password.encode('utf-8'), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
         return (salt + pwdhash).decode('ascii')
 
@@ -246,7 +254,10 @@ class Userdb:
         salt = stored_password[:64]
         stored_password = stored_password[64:]
         pwdhash = hashlib.pbkdf2_hmac(
-            'sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
+            'sha512',
+            provided_password.encode('utf-8'),
+            salt.encode('ascii'),
+            100000)
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
@@ -267,7 +278,8 @@ class Userdb:
                 print("Invalid email!")
             else:
                 cursor = self.__conn.cursor()
-                cursor.execute("SELECT * FROM rpuser WHERE email = %s", [detail])
+                cursor.execute(
+                    "SELECT * FROM rpuser WHERE email = %s", [detail])
                 data = cursor.fetchone()
                 if data is not None:
                     stored_password = data[1]
@@ -276,7 +288,9 @@ class Userdb:
                     return self.verify_password(stored_password, password)
         else:
             cursor = self.__conn.cursor()
-            cursor.execute("SELECT * FROM rpuser WHERE username = %s", [detail])
+            cursor.execute(
+                "SELECT * FROM rpuser WHERE username = %s",
+                [detail])
             data = cursor.fetchone()
             if data is not None:
                 stored_password = data[1]
@@ -352,7 +366,8 @@ class SocketSession:
         Return:
             menu for user to interact with
         """
-        print("Establishing connection to remote host @ " + self.host + ":" + str(self.port))
+        print("Establishing connection to remote host @ " +
+              self.host + ":" + str(self.port))
 
         self.user = user
 
@@ -411,7 +426,10 @@ class SocketSession:
                         self.sock.sendall(bytes(book_name, 'UTF-8'))
                 except ValueError:  # try catch for selection input
                     print("Invalid Option")
-                    self.sock.sendall(bytes('THISISNOTGONNAMATCHANYTHING', 'UTF-8'))
+                    self.sock.sendall(
+                        bytes(
+                            'THISISNOTGONNAMATCHANYTHING',
+                            'UTF-8'))
 
                 excase = True
 
@@ -466,7 +484,7 @@ class Main:
 
             if selection == 1:
                 login_method = menu.login_option()
-                if login_method == None:  # when user choose not to login from login option menu
+                if login_method is None:  # when user choose not to login from login option menu
                     continue
                 elif login_method == 1:  # when user choose to login with email
                     email = menu.get_login_detail(True)
@@ -495,7 +513,6 @@ class Main:
                         self.RemoteMenu(name)
                     else:
                         print("Login failed!")
-
 
             elif selection == 2:
                 db.createuser()

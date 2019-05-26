@@ -27,13 +27,16 @@ Delete functions
     - delete book
     - delete user
     - delete book via form (admin website)
-    
+
 Code modified from Tutorial code
 '''
 from flask import Flask, Blueprint, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-import os, requests, json, enum
+import os
+import requests
+import json
+import enum
 from flask import current_app as app
 from datetime import datetime
 
@@ -48,32 +51,37 @@ ma = Marshmallow()
 
 # LmsUser class for the users of the library system
 
+
 class LmsUser(db.Model):
     """
     this class creates the user model, maps to USER table in database
     """
-    __tablename__= "LmsUser"
-    LmsUserID = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    UserName = db.Column(db.String(256), unique = True)
+    __tablename__ = "LmsUser"
+    LmsUserID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    UserName = db.Column(db.String(256), unique=True)
     Name = db.Column(db.Text)
-    def __init__(self, UserName, Name, LmsUserID = None):
+
+    def __init__(self, UserName, Name, LmsUserID=None):
         self.LmsUserID = LmsUserID
         self.UserName = UserName
         self.Name = Name
+
 
 class LmsUserSchema(ma.Schema):
     """
     LmsUserSchema sets up fields for model
     """
-    def __init__(self, strict = True, **kwargs):
-        super().__init__(strict = strict, **kwargs)
-    
+
+    def __init__(self, strict=True, **kwargs):
+        super().__init__(strict=strict, **kwargs)
+
     class Meta:
         """Fields to expose."""
         fields = ("LmsUserID", "Name", "UserName")
 
+
 lmsUserSchema = LmsUserSchema()
-lmsUsersSchema = LmsUserSchema(many = True)
+lmsUsersSchema = LmsUserSchema(many=True)
 
 
 # This class is for the book table
@@ -83,35 +91,41 @@ class Book(db.Model):
     Book class maps to BOOK table in db
     """
     __tablename__ = "Book"
-    BookID = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    BookID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Title = db.Column(db.Text)
     Author = db.Column(db.Text)
     PublishedDate = db.Column(db.DateTime)
     ISBN = db.Column(db.Text)
 
-    def __init__(self, Title, Author, PublishedDate, ISBN, BookID = None):
+    def __init__(self, Title, Author, PublishedDate, ISBN, BookID=None):
         self.BookID = BookID
         self.Title = Title
         self.Author = Author
         self.PublishedDate = PublishedDate
         self.ISBN = ISBN
 
+
 class BookSchema(ma.Schema):
     """
     BookSchema sets up fields for model
     """
-    # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
-    def __init__(self, strict = True, **kwargs):
-        super().__init__(strict = strict, **kwargs)
-    
+    # Reference:
+    # https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
+
+    def __init__(self, strict=True, **kwargs):
+        super().__init__(strict=strict, **kwargs)
+
     class Meta:
         """Fields to expose"""
         fields = ("BookID", "Title", "Author", "PublishedDate", "ISBN")
 
-bookSchema = BookSchema()
-booksSchema = BookSchema(many = True)
 
-#enum for the borrowing status of the book
+bookSchema = BookSchema()
+booksSchema = BookSchema(many=True)
+
+# enum for the borrowing status of the book
+
+
 class Status_Enum(enum.Enum):
     """
     This class creates an enum object for mapping borrow/return status
@@ -119,48 +133,71 @@ class Status_Enum(enum.Enum):
     BORROWED = "borrowed"
     RETURNED = "returned"
 
-# This class is for the Borrowed table, relational table describing books borrowed by users
+# This class is for the Borrowed table, relational table describing books
+# borrowed by users
+
 
 class BookBorrowed(db.Model):
     """
     Bookborrowed class maps to BOOKBORROWED table in db
     """
     __tablename__ = "BookBorrowed"
-    BookBorrowedID = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    LmsUserID  =  db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
-    BookID  =  db.Column(db.Integer, db.ForeignKey('Book.BookID'))
+    BookBorrowedID = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+    LmsUserID = db.Column(db.Integer, db.ForeignKey('LmsUser.LmsUserID'))
+    BookID = db.Column(db.Integer, db.ForeignKey('Book.BookID'))
     #Status = db.Column(db.Enum(Status_Enum))
     Status = db.Column(db.Text)
     BorrowedDate = db.Column(db.DateTime())
     ReturnedDate = db.Column(db.DateTime(), nullable=True)
-    def __init__(self, LmsUserID, BookID, Status, BorrowedDate, ReturnedDate, BookBorrowedID = None):
+
+    def __init__(
+            self,
+            LmsUserID,
+            BookID,
+            Status,
+            BorrowedDate,
+            ReturnedDate,
+            BookBorrowedID=None):
         self.LmsUserID = LmsUserID
         self.BookID = BookID
         self.Status = Status
         self.BorrowedDate = BorrowedDate
         self.ReturnedDate = ReturnedDate
 
+
 class BookBorrowedSchema(ma.Schema):
     """
     Bookborrowed fields for model
     """
-    # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
-    def __init__(self, strict = True, **kwargs):
-        super().__init__(strict = strict, **kwargs)
-    
+    # Reference:
+    # https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
+
+    def __init__(self, strict=True, **kwargs):
+        super().__init__(strict=strict, **kwargs)
+
     class Meta:
         """Fields to expose"""
-        fields = ("BookBorrowedID", "LmsUserID", "BookID", "Status", "BorrowedDate", "ReturnedDate")
+        fields = (
+            "BookBorrowedID",
+            "LmsUserID",
+            "BookID",
+            "Status",
+            "BorrowedDate",
+            "ReturnedDate")
+
 
 bookBorrowedSchema = BookBorrowedSchema()
-booksBorrowedSchema = BookBorrowedSchema(many = True)
+booksBorrowedSchema = BookBorrowedSchema(many=True)
 
 #######################
 # FETCH ENDPOINTS
 #######################
 
 # Endpoint to show all books.
-@api.route("/book", methods = ["GET"])
+@api.route("/book", methods=["GET"])
 def getBooks():
     books = Book.query.all()
     result = booksSchema.dump(books)
@@ -168,7 +205,7 @@ def getBooks():
     return jsonify(result.data)
 
 # Endpoint to show all users
-@api.route("/user", methods = ["GET"])
+@api.route("/user", methods=["GET"])
 def getUsers():
     users = LmsUser.query.all()
     result = lmsUsersSchema.dump(users)
@@ -176,7 +213,7 @@ def getUsers():
     return jsonify(result.data)
 
 # Endpoint to show all book loan records
-@api.route("/bookborrowed", methods = ["GET"])
+@api.route("/bookborrowed", methods=["GET"])
 def getBooksBorrowed():
     booksborrowed = BookBorrowed.query.all()
     result = booksBorrowedSchema.dump(booksborrowed)
@@ -184,21 +221,21 @@ def getBooksBorrowed():
     return jsonify(result.data)
 
 # Endpoint to get a single book by id.
-@api.route("/book/<id>", methods = ["GET"])
+@api.route("/book/<id>", methods=["GET"])
 def getBook(id):
     book = Book.query.get(id)
 
     return bookSchema.jsonify(book)
 
 # Endpoint to get a single user by id.
-@api.route("/user/<id>", methods = ["GET"])
+@api.route("/user/<id>", methods=["GET"])
 def getUser(id):
     user = LmsUser.query.get(id)
 
     return lmsUserSchema.jsonify(user)
 
 # Endpoint to fetch specific single record of a book loan
-@api.route("/bookborrowed/<id>", methods = ["GET"])
+@api.route("/bookborrowed/<id>", methods=["GET"])
 def getBookBorrowed(id):
     bookborrowed = BookBorrowed.query.get(id)
 
@@ -208,28 +245,28 @@ def getBookBorrowed(id):
 # INSERTION ENDPOINTS
 #######################
 
-#Endpoint to create new book via form
+# Endpoint to create new book via form
 @api.route("/addbookform", methods=["POST"])
 def addBookForm():
-    #grab data from form fields
+    # grab data from form fields
     title = request.form.get('title')
     author = request.form.get('author')
     publisheddate = request.form.get('publisheddate')
     isbn = request.form.get('isbn')
-    #create new book object
+    # create new book object
     newBook = Book(
-        Title = title, 
-        Author = author, 
-        PublishedDate = publisheddate, 
-        ISBN = isbn)
-    #commit to db
+        Title=title,
+        Author=author,
+        PublishedDate=publisheddate,
+        ISBN=isbn)
+    # commit to db
     db.session.add(newBook)
     db.session.commit()
 
     return "Book: " + str(title) + " Sucessfully Added"
 
 # Endpoint to create new book.
-@api.route("/book", methods = ["POST"])
+@api.route("/book", methods=["POST"])
 def addBook():
     title = request.json["title"]
     author = request.json["author"]
@@ -237,10 +274,10 @@ def addBook():
     isbn = request.json["isbn"]
 
     newBook = Book(
-        Title = title, 
-        Author = author, 
-        PublishedDate = publisheddate, 
-        ISBN = isbn)
+        Title=title,
+        Author=author,
+        PublishedDate=publisheddate,
+        ISBN=isbn)
 
     db.session.add(newBook)
     db.session.commit()
@@ -248,12 +285,12 @@ def addBook():
     return bookSchema.jsonify(newBook)
 
 # Endpoint to create a new user.
-@api.route("/user", methods = ["POST"])
+@api.route("/user", methods=["POST"])
 def addUser():
     username = request.json["username"]
     name = request.json["name"]
 
-    newLmsUser = LmsUser(UserName = username, Name=name)
+    newLmsUser = LmsUser(UserName=username, Name=name)
 
     db.session.add(newLmsUser)
     db.session.commit()
@@ -261,16 +298,20 @@ def addUser():
     return lmsUserSchema.jsonify(newLmsUser)
 
 # Endpoint to record the borrowing of a book.
-@api.route("/bookborrowed", methods = ["POST"])
+@api.route("/bookborrowed", methods=["POST"])
 def addBookBorrowed():
     lmsuserid = request.json["lmsuserid"]
     bookid = request.json["bookid"]
     borroweddate = datetime.now()
-    #this is where the enum class defined above the bookborrowed class comes in
+    # this is where the enum class defined above the bookborrowed class comes in
     #status = Status_Enum(Status_Enum.BORROWED)
     status = "borrowed"
-    newBookBorrowed = BookBorrowed(LmsUserID = lmsuserid, BookID = bookid, 
-    Status = status, BorrowedDate = borroweddate, ReturnedDate = None)
+    newBookBorrowed = BookBorrowed(
+        LmsUserID=lmsuserid,
+        BookID=bookid,
+        Status=status,
+        BorrowedDate=borroweddate,
+        ReturnedDate=None)
 
     db.session.add(newBookBorrowed)
     db.session.commit()
@@ -282,14 +323,13 @@ def addBookBorrowed():
 #######################
 
 # Endpoint to update book.
-@api.route("/book/<id>", methods = ["PUT"])
+@api.route("/book/<id>", methods=["PUT"])
 def bookUpdate(id):
     book = Book.query.get(id)
     title = request.json["title"]
     author = request.json["author"]
     publisheddate = request.json["publisheddate"]
     isbn = request.json["isbn"]
-
 
     book.Title = title
     book.Author = author
@@ -303,17 +343,17 @@ def bookUpdate(id):
 # Endpoint to update book via form
 @api.route("/editbookform", methods=["POST"])
 def editBookForm():
-    #grab data from form fields
+    # grab data from form fields
     id = request.form.get('bookid')
     title = request.form.get('title')
     author = request.form.get('author')
     publisheddate = request.form.get('publisheddate')
     isbn = request.form.get('isbn')
 
-    #grab book by id
+    # grab book by id
     book = Book.query.get(id)
 
-    #update fields
+    # update fields
     if(title):
         book.Title = title
     if(author):
@@ -328,7 +368,7 @@ def editBookForm():
     return "Book Succesfully Updated"
 
 # Endpoint to update a user.
-@api.route("/user/<id>", methods = ["PUT"])
+@api.route("/user/<id>", methods=["PUT"])
 def userUpdate(id):
     lmsUser = LmsUser.query.get(id)
 
@@ -343,13 +383,12 @@ def userUpdate(id):
     return bookSchema.jsonify(lmsUser)
 
 # Endpoint to update book loan record (for returning book)
-@api.route("/bookborrowed/<id>", methods = ["PUT"])
+@api.route("/bookborrowed/<id>", methods=["PUT"])
 def bookBorrowedUpdate(id):
     bookBorrowed = BookBorrowed.query.get(id)
 
     returneddate = datetime.now()
     status = "returned"
-
 
     bookBorrowed.ReturnedDate = returneddate
     bookBorrowed.Status = status
@@ -364,7 +403,7 @@ def bookBorrowedUpdate(id):
 #######################
 
 # Endpoint to delete book.
-@api.route("/book/<id>", methods = ["DELETE"])
+@api.route("/book/<id>", methods=["DELETE"])
 def bookDelete(id):
     book = Book.query.get(id)
 
@@ -373,21 +412,21 @@ def bookDelete(id):
 
     return bookSchema.jsonify(book)
 
-#Endpoint to delete a book via form
+# Endpoint to delete a book via form
 @api.route("/deletebookform", methods=["POST"])
 def deleteBookForm():
-    #grab id data from form
+    # grab id data from form
     id = request.form.get('bookid')
-    #grab book by id
+    # grab book by id
     book = Book.query.get(id)
-    #delete from db
+    # delete from db
     db.session.delete(book)
     db.session.commit()
 
     return 'Book Successfully Deleted'
-    
+
 # Endpoint to delete a user.
-@api.route("/user/<id>", methods = ["DELETE"])
+@api.route("/user/<id>", methods=["DELETE"])
 def userDelete(id):
     lmsUser = LmsUser.query.get(id)
 
