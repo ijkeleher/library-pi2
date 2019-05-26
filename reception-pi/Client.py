@@ -392,31 +392,31 @@ class Main:
             selection = menu.getselection()
 
             if selection == 1:
-                login_with_email = menu.login_option()
-                if login_with_email == None: # when user choose not to login from login option menu
+                login_method = menu.login_option()
+                if login_method == None: # when user choose not to login from login option menu
                     continue
-                elif login_with_email == 1: # when user choose to login with email
+                elif login_method == 1: # when user choose to login with email
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
-                elif login_with_email == 2: # when user choose to login with username
+                elif login_method == 2: # when user choose to login with username
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
                         self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
-                elif login_with_email == 3:
+                elif login_method == 3:
                     print("Login with Facial Recognition....")
                     # copy encoding file to current directory
                     copy2('./facialrecognition/encodings.pickle', '.')
                     recognise = Recognise()
                     name = recognise.getuser()
                     valid_login = False
-                    if name != "Unknown":
+                    if name is not "Unknown":
                         valid_login = True
                     if valid_login:
                         self.RemoteMenu(name)
