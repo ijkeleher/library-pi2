@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+from imutils.video import VideoStream
+import time
+import imutils
+from pyzbar import pyzbar
+
+
 class QRscan:
     """
     QR Code scanner
@@ -35,6 +41,7 @@ class QRscan:
                 barcodeData = barcode.data.decode("utf-8")
                 barcodeType = barcode.type
                 return barcodeData
+
 
 if __name__ == "__main__":
     QRscan().scan()

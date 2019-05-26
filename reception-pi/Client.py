@@ -1,32 +1,26 @@
 #!/usr/bin/python3
 
-import sys
-import MySQLdb
-import json
-import hashlib, binascii, os
+import binascii
 import getpass
+import hashlib
+import json
+import os
 import re
 import socket
+import sys
 from shutil import copy2
+
+import MySQLdb
 from facialrecognition.recognise import Recognise
-from speech import Speech2Text
 from qrscan import QRscan
-from imutils.video import VideoStream
-from pyzbar import pyzbar
-import datetime
-import imutils
-import time
-import cv2
-import face_recognition
-import argparse
-import pickle
+from speech import Speech2Text
+
 
 class Menu:
     """
     local client menu
     provide function for user to login, register
     """
-
 
     def displaymenu(self):
         """
@@ -150,14 +144,12 @@ class Userdb:
 
             passwordhashed = self.hash_password(passwordraw)
 
-
             firstname = input("Enter First name: ")
             lastname = input("Enter Last name: ")
 
             if re.fullmatch(chars, firstname) is None or re.fullmatch(chars, lastname) is None:
                 print("Error: invalid first or last name ")
                 continue
-
 
             email = input("Enter Email: ")
 
@@ -177,7 +169,8 @@ class Userdb:
 
         params = (username, passwordhashed, firstname, lastname, email)
 
-        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)", params)
+        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)",
+                       params)
 
         self.__conn.commit()
 
@@ -277,7 +270,7 @@ class Config:
             with open(filename) as data:
                 self.__conf = json.load(data)
         except EnvironmentError:
-            print("Can't open "+ filename)
+            print("Can't open " + filename)
 
     def getdbuser(self):
         """
@@ -316,11 +309,10 @@ class SocketSession:
     """
     Socket session which allow reception-pi and master-pi communicate with each other
     """
-    
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
-    
 
     def Connect(self, user):
         """
@@ -330,8 +322,8 @@ class SocketSession:
         Return:
             menu for user to interact with
         """
-        print("Establishing connection to remote host @ " + self.host+":"+str(self.port))
-      
+        print("Establishing connection to remote host @ " + self.host + ":" + str(self.port))
+
         self.user = user
 
         # Connect
@@ -339,7 +331,7 @@ class SocketSession:
         self.sock.connect((self.host, self.port))
 
         # Start by sending user info
-        self.sock.sendall(bytes(user, 'UTF-8')) 
+        self.sock.sendall(bytes(user, 'UTF-8'))
         # Get back the main menu
         menu = self.sock.recv(4096)
 
@@ -353,7 +345,7 @@ class SocketSession:
         excase = False
 
         while True:
-           
+
             if not excase:
                 # Get some user input
                 inp = str(input("Please enter your response: "))
@@ -362,10 +354,10 @@ class SocketSession:
                 if inp is None:
                     print("Invalid response!")
                     continue
-            
+
                 # Shoot it off to the server
                 self.sock.sendall(bytes(inp, 'UTF-8'))
-            
+
             excase = False
 
             # Get the response
@@ -373,8 +365,8 @@ class SocketSession:
             if 'Please enter a book title' in response:
                 try:
                     selection = int(input("Please select searching method:\n" +
-                        "1. Input book detail\n" +
-                        "2. Voice search\n"))
+                                          "1. Input book detail\n" +
+                                          "2. Voice search\n"))
                     if selection == 1:
                         book_name = input("Book name: ")
                         self.sock.sendall(bytes(book_name, 'UTF-8'))
@@ -385,25 +377,25 @@ class SocketSession:
                         if book_name is None:
                             book_name = "THISISNOTGONNAMATCHANYTHING"
                         self.sock.sendall(bytes(book_name, 'UTF-8'))
-                except ValueError: # try catch for selection input
+                except ValueError:  # try catch for selection input
                     print("Invalid Option")
                     self.sock.sendall(bytes('THISISNOTGONNAMATCHANYTHING', 'UTF-8'))
-                    
+
                 excase = True
 
             if 'QR_CODE_8192' in response:
                 print("QR CODE Scanner\n")
                 qrcode = QRscan()
                 book_code = qrcode.scan()
-                print("="*20+"\n"+str(book_code)+"\n"+"="*20+"\n")
+                print("=" * 20 + "\n" + str(book_code) + "\n" + "=" * 20 + "\n")
                 self.sock.sendall(bytes(book_code, 'utf-8'))
                 excase = True
-                
+
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")
                 print("Returning to main menu...\n\n")
                 break
-            
+
             print(response)
 
 
@@ -412,7 +404,6 @@ class Main:
     def __init__(self):
         self.host = '127.0.0.1'
         self.port = 6969
-
 
     def RemoteMenu(self, user):
         """
@@ -431,33 +422,28 @@ class Main:
 
         session.ConsoleSession()
 
-
-
-
     def main(self):
 
         menu = Menu()
-        configfile = '../config.json' # set path to config.jsons
+        configfile = '../config.json'  # set path to config.jsons
         config = Config(configfile)
         db = Userdb(config)
-
-
 
         while True:
             selection = menu.getselection()
 
             if selection == 1:
                 login_method = menu.login_option()
-                if login_method == None: # when user choose not to login from login option menu
+                if login_method == None:  # when user choose not to login from login option menu
                     continue
-                elif login_method == 1: # when user choose to login with email
+                elif login_method == 1:  # when user choose to login with email
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
-                elif login_method == 2: # when user choose to login with username
+                elif login_method == 2:  # when user choose to login with username
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
@@ -477,12 +463,13 @@ class Main:
                         self.RemoteMenu(name)
                     else:
                         print("Login failed!")
-                    
+
 
             elif selection == 2:
                 db.createuser()
             else:
                 sys.exit(0)
+
 
 if __name__ == "__main__":
     Main().main()
