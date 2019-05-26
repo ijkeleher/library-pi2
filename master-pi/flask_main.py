@@ -18,15 +18,26 @@ import os, requests, json
 from flask_api import api, db
 from flask_site import site
 import flask_login
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.secret_key = 'super secret string'  # Change this!
+
+#load super secret stuff
+load_dotenv()
+KEY = os.getenv("SECRET_KEY")
+DB_USER = os.getenv("DB_USER")
+DB_PW = os.getenv("DB_PW")
+ADMIN_USER = os.getenv("ADMIN_USER")
+ADMIN_PW = os.getenv("ADMIN_PW")
+
+#set secret key
+app.secret_key = KEY
 
 # Update HOST and PASSWORD appropriately.
 HOST = "35.189.9.24"
-USER = "root"
-PASSWORD = "ihv8O3u4d3eHNeD5"
+USER = DB_USER
+PASSWORD = DB_PW
 DATABASE = "rpdb"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://{}:{}@{}/{}".format(USER, PASSWORD, HOST, DATABASE)
@@ -38,8 +49,10 @@ db.init_app(app)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+
+
 # Our mock database.
-users = {'foo@bar.tld': {'password': 'secret'}}
+users = {ADMIN_USER: {'password': ADMIN_PW}}
 
 class User(flask_login.UserMixin):
     pass
