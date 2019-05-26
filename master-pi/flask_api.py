@@ -1,3 +1,35 @@
+'''
+@author Inci Keleher
+
+This file contains the endpoints for API functions
+
+Fetch functions
+    - fetch all books
+    - fetch book by id
+    - fetch all users
+    - fetch user by id
+    - fetch all books borrowed
+    - fetch specific single record of a book loan
+
+Insert functions
+    - add new books
+    - add new book via form (admin website)
+    - add new user
+    - add new book loan
+
+Update functions
+    - update book by id
+    - update book via form (admin website)
+    - update user by id
+    - update book loan by id (used to return a book)
+
+Delete functions
+    - delete book
+    - delete user
+    - delete book via form (admin website)
+    
+Code modified from Tutorial code
+'''
 from flask import Flask, Blueprint, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
