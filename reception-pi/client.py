@@ -1,32 +1,51 @@
 #!/usr/bin/python3
 
-import sys
-import MySQLdb
-import json
-import hashlib, binascii, os
+"""
+
+.. module: client
+
+.. moduleauthor:: Blaise Saunders and Boxuan Lu
+
+"""
+
+import binascii
 import getpass
+import hashlib
+import json
+import os
 import re
 import socket
+import sys
 from shutil import copy2
-from facialrecognition.recognise import Recognise
 
-from imutils.video import VideoStream
-from pyzbar import pyzbar
-import datetime
-import imutils
-import time
-import cv2
-import face_recognition
-import argparse
-import pickle
+import MySQLdb
+from facialrecognition.recognise import Recognise
+from qrscan import QRscan
+from speech import Speech2Text
+
 
 class Menu:
-
+    """
+    local client menu
+    provide function for user to login, register
+    """
 
     def displaymenu(self):
+        """
+        print out menu to console
+        """
         print("1.Login\n2.Register new user\n3.Exit")
 
     def getselection(self):
+        """
+        For user to make selection
+
+        Return:
+            selection: user's selection to interact to menu
+        except:
+            ValueError: when user enter non-digital or number beyond the range
+            EOFError: end of file error
+        """
         while True:
             self.displaymenu()
 
@@ -45,6 +64,7 @@ class Menu:
     def login_option(self):
         """
         Login option menu for user to select method to login
+
         Return:
             1 if user choose to login with email
             2 if user choose to login with username
@@ -72,6 +92,7 @@ class Menu:
     def get_login_detail(self, email):
         """
         Get user login information, either email or username
+
         Param
             if user choose to login with email
         Return 
@@ -86,12 +107,25 @@ class Menu:
 
 
 class Userdb:
+    """
+    Local database store user's information
+    contains: username, salted password, firstname, lastname, email
+    """
 
     def __init__(self, config):
+        """
+        constructor
+
+        Parma:
+            config: local database config
+        """
         self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
-        self.email_addr = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
+        self.email_addr = re.compile(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
     def createuser(self):
+        """
+        create user and insert new user to local database
+        """
 
         inputvalid = False
 
@@ -122,14 +156,12 @@ class Userdb:
 
             passwordhashed = self.hash_password(passwordraw)
 
-
             firstname = input("Enter First name: ")
             lastname = input("Enter Last name: ")
 
             if re.fullmatch(chars, firstname) is None or re.fullmatch(chars, lastname) is None:
                 print("Error: invalid first or last name ")
                 continue
-
 
             email = input("Enter Email: ")
 
@@ -149,13 +181,15 @@ class Userdb:
 
         params = (username, passwordhashed, firstname, lastname, email)
 
-        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)", params)
+        cursor.execute("INSERT INTO rpuser(username, password, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)",
+                       params)
 
         self.__conn.commit()
 
     def exist_info(self, info, email):
         """
         check if username already exist to prevent duplicate username
+
         Param:
             info: info to register for new user
             email: Trus when checking duplicate email, False for username
@@ -176,14 +210,34 @@ class Userdb:
         pass
 
     def hash_password(self, password):
-        """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+        """
+        convert plaintext password into encrypted password
+
+        Parma:
+            password: plaintext password
+        Return:
+            salted password
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
         salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
         pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
         return (salt + pwdhash).decode('ascii')
 
     def verify_password(self, stored_password, provided_password):
-        """Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+        """
+        check if provided password match with stored password
+
+        Parma:
+            stored_password: salted password stored in database
+            provided_password: password that need to be compared with
+        Return:
+            True if two password match
+            False otherwise
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
         salt = stored_password[:64]
         stored_password = stored_password[64:]
         pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
@@ -193,6 +247,7 @@ class Userdb:
     def login(self, detail, email_login):
         """
         login at reception pi
+
         Param:
             detail: login detail, either username or email
             email_login: True if user choose to login with email, False if user choose to login with username
@@ -224,37 +279,74 @@ class Userdb:
 
 
 class Config:
+    """
+    config for local environment
+    """
 
     def __init__(self, filename):
         try:
             with open(filename) as data:
                 self.__conf = json.load(data)
         except EnvironmentError:
-            print("Can't open "+ filename)
+            print("Can't open " + filename)
 
     def getdbuser(self):
+        """
+        get database username
+
+        Return:
+            database username
+        """
         return self.__conf['dbuser']
 
     def getdbpass(self):
+        """
+        get database user password
+
+        Return:
+            database uesr password
+        """
         return self.__conf['dbpass']
 
     def getdbname(self):
+        """
+        get database name
+
+        Return:
+            database name
+        """
         return self.__conf['dbname']
 
     def gethostname(self):
+        """
+        get hostname
+
+        Return:
+            hostname
+        """
         return self.__conf['hostname']
 
 
 class SocketSession:
-    
+    """
+    Socket session which allow reception-pi and master-pi communicate with each other
+    """
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
-    
 
     def Connect(self, user):
-        print("Establishing connection to remote host @ " + self.host+":"+str(self.port))
-      
+        """
+        connect to master pi using socket
+
+        Parma:
+            user: logged in user
+        Return:
+            menu for user to interact with
+        """
+        print("Establishing connection to remote host @ " + self.host + ":" + str(self.port))
+
         self.user = user
 
         # Connect
@@ -262,72 +354,71 @@ class SocketSession:
         self.sock.connect((self.host, self.port))
 
         # Start by sending user info
-        self.sock.sendall(bytes(user, 'UTF-8')) 
+        self.sock.sendall(bytes(user, 'UTF-8'))
         # Get back the main menu
         menu = self.sock.recv(4096)
 
         return menu
 
     def ConsoleSession(self):
+        """
+        Console session allow user to interact with remote sessib
+        """
 
-        qrcase = False
+        excase = False
 
         while True:
-           
-            if not qrcase:
+
+            if not excase:
                 # Get some user input
-                inp = input("Please enter your response: ")
-            
+                inp = str(input("Please enter your response: "))
+                if not inp:
+                    inp = None
+                if inp is None:
+                    print("Invalid response!")
+                    continue
+
                 # Shoot it off to the server
-                self.sock.sendall(bytes(inp, 'UTF-8'))           
-            
-            qrcase = False
+                self.sock.sendall(bytes(inp, 'UTF-8'))
+
+            excase = False
 
             # Get the response
             response = str(self.sock.recv(4096), 'utf-8')
+            if 'Please enter a book title' in response:
+                try:
+                    selection = int(input("Please select searching method:\n" +
+                                          "1. Input book detail\n" +
+                                          "2. Voice search\n"))
+                    if selection == 1:
+                        book_name = input("Book name: ")
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                    elif selection == 2:
+                        print("Listening...\n")
+                        speech = Speech2Text()
+                        book_name = speech.record()
+                        if book_name is None:
+                            book_name = "THISISNOTGONNAMATCHANYTHING"
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                except ValueError:  # try catch for selection input
+                    print("Invalid Option")
+                    self.sock.sendall(bytes('THISISNOTGONNAMATCHANYTHING', 'UTF-8'))
+
+                excase = True
+
             if 'QR_CODE_8192' in response:
                 print("QR CODE Scanner\n")
                 qrcode = QRscan()
                 book_code = qrcode.scan()
-                print("="*20+"\n"+str(book_code)+"\n"+"="*20+"\n")
                 self.sock.sendall(bytes(book_code, 'utf-8'))
-                qrcase = True
-                
+                excase = True
+
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")
                 print("Returning to main menu...\n\n")
                 break
-            
+
             print(response)
-
-
-class QRscan:
-
-    def scan(self):
-
-        # initialize the video stream and allow the camera sensor to warm up
-        print("[INFO] starting video stream...")
-        vs = VideoStream(src=0).start()
-        time.sleep(2.0)
-
-        found = set()
-
-        # loop over the frames from the video stream
-        while True:
-            # grab the frame from the threaded video stream and resize it to
-            # have a maximum width of 400 pixels
-            frame = vs.read()
-            frame = imutils.resize(frame, width=400)
-
-            # find the barcodes in the frame and decode each of the barcodes
-            barcodes = pyzbar.decode(frame)
-
-            # loop over the detected barcodes
-            for barcode in barcodes:
-                # the barcode data is a bytes object so we convert it to a string
-                barcodeData = barcode.data.decode("utf-8")
-                barcodeType = barcode.type
-                return barcodeData
 
 
 class Main:
@@ -336,8 +427,13 @@ class Main:
         self.host = '127.0.0.1'
         self.port = 6969
 
-
     def RemoteMenu(self, user):
+        """
+        Connect to Master Pi for borrow, return book options
+
+        Param:
+            uesr: user that logged in
+        """
         print("Logged in succesfully!")
 
         session = SocketSession(self.host, self.port)
@@ -349,64 +445,54 @@ class Main:
 
         session.ConsoleSession()
 
-
-
-
     def main(self):
 
         menu = Menu()
-        configfile = '../config.json' # set path to config.jsons
+        configfile = '../config.json'  # set path to config.jsons
         config = Config(configfile)
         db = Userdb(config)
-
-
 
         while True:
             selection = menu.getselection()
 
             if selection == 1:
-                login_with_email = menu.login_option()
-                if login_with_email == None: # when user choose not to login from login option menu
+                login_method = menu.login_option()
+                if login_method == None:  # when user choose not to login from login option menu
                     continue
-                elif login_with_email == 1: # when user choose to login with email
+                elif login_method == 1:  # when user choose to login with email
                     email = menu.get_login_detail(True)
                     valid_login = db.login(email, True)
                     if valid_login:
                         self.RemoteMenu(email)
                     else:
                         print("Email or password is not correct!")
-                elif login_with_email == 2: # when user choose to login with username
+                elif login_method == 2:  # when user choose to login with username
                     username = menu.get_login_detail(False)
                     valid_login = db.login(username, False)
                     if valid_login:
                         self.RemoteMenu(username)
                     else:
                         print("Username or password is not correct!")
-                elif login_with_email == 3:
+                elif login_method == 3:
                     print("Login with Facial Recognition....")
                     # copy encoding file to current directory
                     copy2('./facialrecognition/encodings.pickle', '.')
                     recognise = Recognise()
                     name = recognise.getuser()
                     valid_login = False
-                    if name != "Unknown":
+                    if name is not "Unknown":
                         valid_login = True
                     if valid_login:
                         self.RemoteMenu(name)
                     else:
                         print("Login failed!")
-                    
+
 
             elif selection == 2:
                 db.createuser()
-            # elif selection == 3:
-            #     sys.exit(0)
-            # elif selection == 4:
-            #     qrscan = QRscan()
-            #     book = qrscan.scan()
-            #     print("Book returned: " + book)
             else:
                 sys.exit(0)
+
 
 if __name__ == "__main__":
     Main().main()

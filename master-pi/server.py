@@ -13,18 +13,38 @@ from gcalender import gcalender
 class Clouddb:
 	def __init__(self, config):
 		self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
-		self.email_addr = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
+		self.email_addr = re.compile(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
 
 	def hash_password(self, password):
-		"""Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+		"""
+        convert plaintext password into encrypted password
+
+        Parma:
+            password: plaintext password
+        Return:
+            salted password
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
 		salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
 		pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
 		pwdhash = binascii.hexlify(pwdhash)
 		return (salt + pwdhash).decode('ascii')
 
 	def verify_password(self, stored_password, provided_password):
-		"""Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+		"""
+        check if provided password match with stored password
+
+        Parma:
+            stored_password: salted password stored in database
+            provided_password: password that need to be compared with
+        Return:
+            True if two password match
+            False otherwise
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
 		salt = stored_password[:64]
 		stored_password = stored_password[64:]
 		pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
@@ -48,6 +68,7 @@ class Clouddb:
 			return data
 		else:
 			return ''
+    
 	def borrow(self, book_id, calender):
 		"""
 		Borrow a book from the SQL database for books and add google calender reminder
@@ -129,15 +150,39 @@ class Config:
 			print("Can't open "+ filename)
 
 	def getdbuser(self):
+		"""
+		get database username
+
+		Return:
+			database username
+		"""
 		return self.__conf['dbuser']
 
 	def getdbpass(self):
+		"""
+		get database user password
+
+		Return:
+			database uesr password
+		"""
 		return self.__conf['dbpass']
 
 	def getdbname(self):
+		"""
+		get database name
+
+		Return:
+			database name
+		"""
 		return self.__conf['dbname']
 
 	def gethostname(self):
+		"""
+		get hostname
+
+		Return:
+			hostname
+		"""
 		return self.__conf['hostname']
 
 
@@ -226,6 +271,7 @@ class SocketSession:
 						menu = 'main'
 						response += "\nReturning to main menu\n"
 						response += menutext
+
 					elif menu is 'qr':
 						self.db.return_book(user_choice, self.calender)
 						response = 'Book returned! Book = '+user_choice
@@ -260,6 +306,9 @@ class SocketSession:
 				print("Connection terminated... Listening again")
 
 
+class Speech2Text:
+    def record(self):
+        pass
 
 
 class Main:

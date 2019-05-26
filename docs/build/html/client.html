@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reception-Pi Client &#8212; PythonAssignment2 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Master-Pi Server" href="master.html" />
+    <link rel="prev" title="Welcome to PythonAssignment2’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-client">
+<span id="reception-pi-client"></span><h1>Reception-Pi Client<a class="headerlink" href="#module-client" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="client.Config">
+<em class="property">class </em><code class="descclassname">client.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>config for local environment</p>
+<dl class="method">
+<dt id="client.Config.getdbname">
+<code class="descname">getdbname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Config.getdbname" title="Permalink to this definition">¶</a></dt>
+<dd><p>get database name</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Config.getdbpass">
+<code class="descname">getdbpass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Config.getdbpass" title="Permalink to this definition">¶</a></dt>
+<dd><p>get database user password</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database uesr password</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Config.getdbuser">
+<code class="descname">getdbuser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Config.getdbuser" title="Permalink to this definition">¶</a></dt>
+<dd><p>get database username</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database username</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Config.gethostname">
+<code class="descname">gethostname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Config.gethostname" title="Permalink to this definition">¶</a></dt>
+<dd><p>get hostname</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>hostname</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="client.Main">
+<em class="property">class </em><code class="descclassname">client.</code><code class="descname">Main</code><a class="headerlink" href="#client.Main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="client.Main.RemoteMenu">
+<code class="descname">RemoteMenu</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Main.RemoteMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to Master Pi for borrow, return book options</p>
+<dl class="simple">
+<dt>Param:</dt><dd><p>uesr: user that logged in</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Main.main">
+<code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Main.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="client.Menu">
+<em class="property">class </em><code class="descclassname">client.</code><code class="descname">Menu</code><a class="headerlink" href="#client.Menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>local client menu
+provide function for user to login, register</p>
+<dl class="method">
+<dt id="client.Menu.displaymenu">
+<code class="descname">displaymenu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Menu.displaymenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>print out menu to console</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Menu.get_login_detail">
+<code class="descname">get_login_detail</code><span class="sig-paren">(</span><em>email</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Menu.get_login_detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get user login information, either email or username</p>
+<dl class="simple">
+<dt>Param</dt><dd><p>if user choose to login with email</p>
+</dd>
+<dt>Return </dt><dd><p>username or email that user need to login with</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Menu.getselection">
+<code class="descname">getselection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Menu.getselection" title="Permalink to this definition">¶</a></dt>
+<dd><p>For user to make selection</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>selection: user’s selection to interact to menu</p>
+</dd>
+<dt>except:</dt><dd><p>ValueError: when user enter non-digital or number beyond the range
+EOFError: end of file error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Menu.login_option">
+<code class="descname">login_option</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Menu.login_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Login option menu for user to select method to login</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>1 if user choose to login with email
+2 if user choose to login with username
+3 if user choose to login with facial recognition
+None if user don’t want to login</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="client.SocketSession">
+<em class="property">class </em><code class="descclassname">client.</code><code class="descname">SocketSession</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#client.SocketSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Socket session which allow reception-pi and master-pi communicate with each other</p>
+<dl class="method">
+<dt id="client.SocketSession.Connect">
+<code class="descname">Connect</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="headerlink" href="#client.SocketSession.Connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>connect to master pi using socket</p>
+<dl class="simple">
+<dt>Parma:</dt><dd><p>user: logged in user</p>
+</dd>
+<dt>Return:</dt><dd><p>menu for user to interact with</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.SocketSession.ConsoleSession">
+<code class="descname">ConsoleSession</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.SocketSession.ConsoleSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Console session allow user to interact with remote sessib</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="client.Userdb">
+<em class="property">class </em><code class="descclassname">client.</code><code class="descname">Userdb</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Local database store user’s information
+contains: username, salted password, firstname, lastname, email</p>
+<dl class="method">
+<dt id="client.Userdb.createuser">
+<code class="descname">createuser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.createuser" title="Permalink to this definition">¶</a></dt>
+<dd><p>create user and insert new user to local database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Userdb.exist_info">
+<code class="descname">exist_info</code><span class="sig-paren">(</span><em>info</em>, <em>email</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.exist_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if username already exist to prevent duplicate username</p>
+<dl class="simple">
+<dt>Param:</dt><dd><p>info: info to register for new user
+email: Trus when checking duplicate email, False for username</p>
+</dd>
+<dt>Return:</dt><dd><p>Ture if username existed already
+False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Userdb.hash_password">
+<code class="descname">hash_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.hash_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert plaintext password into encrypted password</p>
+<dl class="simple">
+<dt>Parma:</dt><dd><p>password: plaintext password</p>
+</dd>
+<dt>Return:</dt><dd><p>salted password</p>
+</dd>
+</dl>
+<p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Userdb.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>detail</em>, <em>email_login</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>login at reception pi</p>
+<dl class="simple">
+<dt>Param:</dt><dd><p>detail: login detail, either username or email
+email_login: True if user choose to login with email, False if user choose to login with username</p>
+</dd>
+<dt>Return:</dt><dd><p>True if login is valid
+False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="client.Userdb.loginvalid">
+<code class="descname">loginvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.loginvalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="client.Userdb.verify_password">
+<code class="descname">verify_password</code><span class="sig-paren">(</span><em>stored_password</em>, <em>provided_password</em><span class="sig-paren">)</span><a class="headerlink" href="#client.Userdb.verify_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if provided password match with stored password</p>
+<dl class="simple">
+<dt>Parma:</dt><dd><p>stored_password: salted password stored in database
+provided_password: password that need to be compared with</p>
+</dd>
+<dt>Return:</dt><dd><p>True if two password match
+False otherwise</p>
+</dd>
+</dl>
+<p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PythonAssignment2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reception-Pi Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="master.html">Master-Pi Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to PythonAssignment2’s documentation!</a></li>
+      <li>Next: <a href="master.html" title="next chapter">Master-Pi Server</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Blaise Saunders, Inci Keleher, Boxuan Lu, Christopher Heuvel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

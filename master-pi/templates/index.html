@@ -1,19 +1,138 @@
 <!DOCTYPE html>
     <head>
-        <title>Person</title>
+        <title>Library Admin Panel</title>
+        <style>
+                table, th, td {
+                  border: 1px solid black;
+                }
+        </style>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
-    <body>
-        <table>
-            <tr>
+    <body class="container">
+        <h2>Generate Library Daily Report</h2>
+        <button class="btn btn-primary"
+        onclick="window.location.href = 'https://datastudio.google.com/open/1wVlGLrE9p_EcmUeWL4N2NV8Mp5U6nyj0';">Generate Report</button>
+
+        <h2>Library Catalogue</h2>
+        <table class="table table-striped">
+            <tr class="thead-dark">
                 <th>BookID</th>
                 <th>Title</th>
+                <th>Author</th>
+                <th>PublishedDate</th>
+                <th>ISBN</th>
             </tr>
             {%for book in books%}
                 <tr>
                     <td>{{book.BookID}}</td>
                     <td>{{book.Title}}</td>
+                    <td>{{book.Author}}</td>
+                    <td>{{book.PublishedDate}}</td>
+                    <td>{{book.ISBN}}</td>
+
                 </tr>
             {%endfor%}
         </table>
+        <br />
+
+        <h2>Add new Book to Library Catalogue</h2>
+      <form action = "http://localhost:5000/addbookform" method = "POST">
+        <div class="row">
+            <div class="col-sm">
+                <p>Title</p>
+            </div>
+            <div class="col-sm-8">
+                <input class="input-group" type = "text" name = "title" required placeholder="Title"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Author</p>
+            </div>
+            <div class="col-sm-8">
+                <input class="input-group" type="text" name="author" required placeholder="Author" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p>Date Published</p>
+            </div>
+            <div class="col-sm-8">
+                <input class="input-group" type="text" name="publisheddate" required placeholder="Publish Date"/>
+            </div>
+         </div>
+         <div class="row">
+             <div class="col-sm">
+                 <p>ISBN</p>
+             </div>
+             <div class="col-sm-8">
+                <input class="input-group" type="text" name="isbn" required placeholder="ISBN" />
+             </div>
+         </div>
+         <p><input class="btn btn-success" type = "submit" value = "submit" /></p>
+      </form>
+
+      <h2>Edit Book in Library Catalogue</h2>
+      <form action = "http://localhost:5000/editbookform" method = "POST">
+        <div class="row">
+            <div class="col-sm">
+                <p>BookID</p>
+            </div>
+            <div class="col-sm-8">
+                <input class="input-group" type="text" name="bookid" required placeholder="Book ID"/>
+            </div>
+        </div>
+         <div class="row">
+             <div class="col-sm">
+                 <p>Title</p>
+             </div>
+             <div class="col-sm-8">
+                 <input class="input-group" type="text" name="title" required placeholder="Title"/>
+             </div>
+        </div>
+         <div class="row">
+             <div class="col-sm">
+                 <p>Author</p>
+             </div>
+             <div class="col-sm-8">
+                 <input class="input-group" typx="text" name="author" required placeholder="Author"/>
+             </div>
+        </div>
+         <div class="row">
+             <div class="col-sm">
+                 <p>Date Published</p>
+             </div>
+             <div class="col-sm-8">
+                 <input class="input-group" type="text" name="publisheddate" required placeholder="Publish Date"/>
+             </div>
+        </div>
+         <div class="row">
+             <div class="col-sm">
+                 <p>ISBN</p>
+             </div>
+             <div class="col-sm-8">
+                 <input class="input-group" type="text" name="isbn" required placeholder="ISBN"/>
+             </div>
+        </div>
+         <p><input class="btn btn-info" type = "submit" value = "submit" /></p>
+      </form>
+
+      <h2>Delete Book from Catalogue</h2>
+      <form action = "http://localhost:5000/deletebookform" method = "POST">
+        <div class="row">
+            <div class="col-sm">
+                <p>Book ID</p>
+            </div>
+            <div class="col-sm-8">
+                <input class="input-group" type="text" name="bookid" required placeholder="Book ID"/>
+            </div>
+        </div>
+         <p><input class="btn btn-danger" type = "submit" value = "submit" /></p>
+      </form>
+
+
+
+      
+
     </body>
 </html>

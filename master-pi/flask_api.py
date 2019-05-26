@@ -1,3 +1,35 @@
+'''
+@author Inci Keleher
+
+This file contains the endpoints for API functions
+
+Fetch functions
+    - fetch all books
+    - fetch book by id
+    - fetch all users
+    - fetch user by id
+    - fetch all books borrowed
+    - fetch specific single record of a book loan
+
+Insert functions
+    - add new books
+    - add new book via form (admin website)
+    - add new user
+    - add new book loan
+
+Update functions
+    - update book by id
+    - update book via form (admin website)
+    - update user by id
+    - update book loan by id (used to return a book)
+
+Delete functions
+    - delete book
+    - delete user
+    - delete book via form (admin website)
+    
+Code modified from Tutorial code
+'''
 from flask import Flask, Blueprint, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -46,11 +78,14 @@ class Book(db.Model):
     Title = db.Column(db.Text)
     Author = db.Column(db.Text)
     PublishedDate = db.Column(db.DateTime)
-    def __init__(self, Title, Author, PublishedDate, BookID = None):
+    ISBN = db.Column(db.Text)
+
+    def __init__(self, Title, Author, PublishedDate, ISBN, BookID = None):
         self.BookID = BookID
         self.Title = Title
         self.Author = Author
         self.PublishedDate = PublishedDate
+        self.ISBN = ISBN
 
 class BookSchema(ma.Schema):
     # Reference: https://github.com/marshmallow-code/marshmallow/issues/377#issuecomment-261628415
@@ -59,7 +94,7 @@ class BookSchema(ma.Schema):
     
     class Meta:
         # Fields to expose.
-        fields = ("BookID", "Title", "Author", "PublishedDate")
+        fields = ("BookID", "Title", "Author", "PublishedDate", "ISBN")
 
 bookSchema = BookSchema()
 booksSchema = BookSchema(many = True)
@@ -152,14 +187,39 @@ def getBookBorrowed(id):
 # INSERTION ENDPOINTS
 #######################
 
+#Endpoint to create new book via form
+@api.route("/addbookform", methods=["POST"])
+def addBookForm():
+    #grab data from form fields
+    title = request.form.get('title')
+    author = request.form.get('author')
+    publisheddate = request.form.get('publisheddate')
+    isbn = request.form.get('isbn')
+    #create new book object
+    newBook = Book(
+        Title = title, 
+        Author = author, 
+        PublishedDate = publisheddate, 
+        ISBN = isbn)
+    #commit to db
+    db.session.add(newBook)
+    db.session.commit()
+
+    return "Book: " + str(title) + " Sucessfully Added"
+
 # Endpoint to create new book.
 @api.route("/book", methods = ["POST"])
 def addBook():
     title = request.json["title"]
     author = request.json["author"]
     publisheddate = request.json["publisheddate"]
+    isbn = request.json["isbn"]
 
-    newBook = Book(Title = title, Author=author, PublishedDate=publisheddate)
+    newBook = Book(
+        Title = title, 
+        Author = author, 
+        PublishedDate = publisheddate, 
+        ISBN = isbn)
 
     db.session.add(newBook)
     db.session.commit()
@@ -207,14 +267,44 @@ def bookUpdate(id):
     title = request.json["title"]
     author = request.json["author"]
     publisheddate = request.json["publisheddate"]
+    isbn = request.json["isbn"]
+
 
     book.Title = title
     book.Author = author
     book.PublishedDate = publisheddate
+    book.ISBN = isbn
 
     db.session.commit()
 
     return bookSchema.jsonify(book)
+
+# Endpoint to update book via form
+@api.route("/editbookform", methods=["POST"])
+def editBookForm():
+    #grab data from form fields
+    id = request.form.get('bookid')
+    title = request.form.get('title')
+    author = request.form.get('author')
+    publisheddate = request.form.get('publisheddate')
+    isbn = request.form.get('isbn')
+
+    #grab book by id
+    book = Book.query.get(id)
+
+    #update fields
+    if(title):
+        book.Title = title
+    if(author):
+        book.Author = author
+    if(publisheddate):
+        book.PublishedDate = publisheddate
+    if(isbn):
+        book.ISBN = isbn
+
+    db.session.commit()
+
+    return "Book Succesfully Updated"
 
 # Endpoint to update a user.
 @api.route("/user/<id>", methods = ["PUT"])
@@ -262,6 +352,19 @@ def bookDelete(id):
 
     return bookSchema.jsonify(book)
 
+#Endpoint to delete a book via form
+@api.route("/deletebookform", methods=["POST"])
+def deleteBookForm():
+    #grab id data from form
+    id = request.form.get('bookid')
+    #grab book by id
+    book = Book.query.get(id)
+    #delete from db
+    db.session.delete(book)
+    db.session.commit()
+
+    return 'Book Successfully Deleted'
+    
 # Endpoint to delete a user.
 @api.route("/user/<id>", methods = ["DELETE"])
 def userDelete(id):
