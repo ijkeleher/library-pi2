@@ -34,14 +34,16 @@ class Clouddb:
 		"""
 		Sear
 		Param:
-			detail: login detail, either username or email
-			email_login: True if user choose to login with email, False if user choose to login with username
+			query: search query
+			queryType: search method, isbn if search according to isbn
 		Return:
-			True if login is valid
-			False otherwise
+			search result, empty string if no match found
 		"""
 		cursor = self.__conn.cursor()
-		cursor.execute("SELECT * FROM Book WHERE Title LIKE %s", ["%"+query+"%"])
+		if queryType is "isbn":
+			cursor.execute("SELECT * FROM Book WHERE isbn LIKE %s", [query])
+		else:
+			cursor.execute("SELECT * FROM Book WHERE Title LIKE %s", ["%"+query+"%"])
 		data = cursor.fetchall()
 		if data is not None:
 			return data
@@ -152,8 +154,12 @@ class SocketSession:
 						menu = 'main'
 						response += "\nReturning to main menu\n"
 						response += menutext
-					elif menu is 'qr':
-						response = 'Book returned! Book = '+user_choice
+					elif menu is 'qr': # search book according to qr code received
+						books = self.db.search(user_choice, "isbn")
+						book_name = ""
+						for book in books:
+							book_name = book[1]
+						response = 'Book returned! Book = '+ book_name
 						menu = 'main'
 
 

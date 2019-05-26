@@ -234,15 +234,35 @@ class Config:
             print("Can't open "+ filename)
 
     def getdbuser(self):
+        """
+        get database username
+        Return:
+            database username
+        """
         return self.__conf['dbuser']
 
     def getdbpass(self):
+        """
+        get database user password
+        Return:
+            database uesr password
+        """
         return self.__conf['dbpass']
 
     def getdbname(self):
+        """
+        get database name
+        Return:
+            database name
+        """
         return self.__conf['dbname']
 
     def gethostname(self):
+        """
+        get hostname
+        Return:
+            hostname
+        """
         return self.__conf['hostname']
 
 
@@ -331,6 +351,11 @@ class SocketSession:
 class QRscan:
 
     def scan(self):
+        """
+        scan qr code to get information
+        Return:
+            barcodeData: a bytes object
+        """
 
         # initialize the video stream and allow the camera sensor to warm up
         print("[INFO] starting video stream...")
@@ -365,6 +390,11 @@ class Main:
 
 
     def RemoteMenu(self, user):
+        """
+        Connect to Master Pi for borrow, return book options
+        Param:
+            uesr: user that logged in
+        """
         print("Logged in succesfully!")
 
         session = SocketSession(self.host, self.port)
