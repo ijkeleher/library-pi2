@@ -20,8 +20,17 @@ import time
 import cv2
 
 class Recognise:
+    """
+    recognise user
+    """
 
     def getuser(self):
+        """
+        implementation of facial recognise
+
+        Return:
+            name of user
+        """
 
         # construct the argument parser and parse the arguments
         ap = argparse.ArgumentParser()

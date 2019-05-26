@@ -8,10 +8,25 @@ import speech_recognition as sr
 import subprocess
 
 class Speech2Text:
-    # MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)"
-    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:1,0)"
+    """
+    voice function which convert voice into text
+    """
+    # MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:2,0)" # laptop config
+    MIC_NAME = "Microsoft® LifeCam HD-3000: USB Audio (hw:1,0)" # raspberry pi config
 
     def record(self):
+        """
+        record voice
+
+        Return:
+            book name according to voice
+        except:
+            WaitTimeError
+
+            UnKnownValueError
+            
+            RequestError
+        """
         # Set the device ID of the mic that we specifically want to use to avoid ambiguity
         for i, microphone_name in enumerate(sr.Microphone.list_microphone_names()):
             print(microphone_name)

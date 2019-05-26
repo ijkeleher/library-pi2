@@ -14,6 +14,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utility" href="utility.html" />
     <link rel="prev" title="Reception-Pi Client" href="client.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -40,19 +41,24 @@
 <dl class="method">
 <dt id="server.Clouddb.hash_password">
 <code class="descname">hash_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#server.Clouddb.hash_password" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
+<dd><p>convert plaintext password into encrypted password</p>
+<dl class="simple">
+<dt>Parma:</dt><dd><p>password: plaintext password</p>
+</dd>
+<dt>Return:</dt><dd><p>salted password</p>
+</dd>
+</dl>
+<p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="server.Clouddb.search">
 <code class="descname">search</code><span class="sig-paren">(</span><em>query</em>, <em>queryType</em><span class="sig-paren">)</span><a class="headerlink" href="#server.Clouddb.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sear
-Param:</p>
-<blockquote>
-<div><p>query: search query
-queryType: search method, isbn if search according to isbn</p>
-</div></blockquote>
-<dl class="simple">
+<dd><p>sql query to cloud database</p>
+<dl>
+<dt>Param:</dt><dd><p>query: search query</p>
+<p>queryType: search method, isbn if search according to isbn</p>
+</dd>
 <dt>Return:</dt><dd><p>search result, empty string if no match found</p>
 </dd>
 </dl>
@@ -61,7 +67,16 @@ queryType: search method, isbn if search according to isbn</p>
 <dl class="method">
 <dt id="server.Clouddb.verify_password">
 <code class="descname">verify_password</code><span class="sig-paren">(</span><em>stored_password</em>, <em>provided_password</em><span class="sig-paren">)</span><a class="headerlink" href="#server.Clouddb.verify_password" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
+<dd><p>check if provided password match with stored password</p>
+<dl class="simple">
+<dt>Parma:</dt><dd><p>stored_password: salted password stored in database
+provided_password: password that need to be compared with</p>
+</dd>
+<dt>Return:</dt><dd><p>True if two password match
+False otherwise</p>
+</dd>
+</dl>
+<p>Reference: <a class="reference external" href="https://www.vitoshacademy.com/hashing-passwords-in-python/">https://www.vitoshacademy.com/hashing-passwords-in-python/</a></p>
 </dd></dl>
 
 </dd></dl>
@@ -73,22 +88,42 @@ queryType: search method, isbn if search according to isbn</p>
 <dl class="method">
 <dt id="server.Config.getdbname">
 <code class="descname">getdbname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.Config.getdbname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get database name</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database name</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="server.Config.getdbpass">
 <code class="descname">getdbpass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.Config.getdbpass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get database user password</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database uesr password</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="server.Config.getdbuser">
 <code class="descname">getdbuser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.Config.getdbuser" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get database username</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>database username</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="server.Config.gethostname">
 <code class="descname">gethostname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.Config.gethostname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get hostname</p>
+<dl class="simple">
+<dt>Return:</dt><dd><p>hostname</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -148,6 +183,7 @@ queryType: search method, isbn if search according to isbn</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="client.html">Reception-Pi Client</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Master-Pi Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
 </ul>
 
 <div class="relations">
@@ -155,6 +191,7 @@ queryType: search method, isbn if search according to isbn</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="client.html" title="previous chapter">Reception-Pi Client</a></li>
+      <li>Next: <a href="utility.html" title="next chapter">Utility</a></li>
   </ul></li>
 </ul>
 </div>

@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../../reception-pi'))
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../master-pi'))
+sys.path.insert(0, os.path.abspath('../../reception-pi/facialrecognition'))
 sys.setrecursionlimit(1500)
 
 

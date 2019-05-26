@@ -14,6 +14,7 @@ class QRscan:
     def scan(self):
         """
         scan qr code to get information
+        
         Return:
             barcodeData: a bytes object
         """

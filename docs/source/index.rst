@@ -12,6 +12,7 @@ Welcome to PythonAssignment2's documentation!
 
    client
    master
+   utility
 
 
 Indices and tables
