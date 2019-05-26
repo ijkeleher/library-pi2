@@ -11,9 +11,9 @@
 ## https://www.hackster.io/mjrobot/real-time-face-recognition-an-end-to-end-project-a10826
 
 # import the necessary packages
-import cv2
 import os
 import argparse
+import cv2
 
 class Main:
     def main(self):
@@ -23,10 +23,8 @@ class Main:
 
         # construct the argument parser and parse the arguments
         ap = argparse.ArgumentParser()
-        ap.add_argument("-n", "--name", required = True,
-            help="The name/id of this person you are recording")
-        ap.add_argument("-i", "--dataset", default = "dataset",
-            help="path to input directory of faces + images")
+        ap.add_argument("-n", "--name", required=True, help="The name/id of this person you are recording")
+        ap.add_argument("-i", "--dataset", default="dataset", help="path to input directory of faces + images")
         args = vars(ap.parse_args())
 
         # use name as folder name
@@ -51,15 +49,15 @@ class Main:
             key = input("Press q to quit or ENTER to continue: ")
             if key == "q":
                 break
-            
+
             ret, frame = cam.read()
             if not ret:
                 break
-            
+
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
-            if(len(faces) == 0):
+            if len(faces) == 0:
                 print("No face detected, please try again")
                 continue
             

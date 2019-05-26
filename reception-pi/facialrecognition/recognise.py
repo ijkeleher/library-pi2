@@ -11,12 +11,12 @@
 ## https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/
 
 # import the necessary packages
-from imutils.video import VideoStream
-import face_recognition
 import argparse
-import imutils
 import pickle
 import time
+from imutils.video import VideoStream
+import face_recognition
+import imutils
 import cv2
 
 class Recognise:
@@ -34,12 +34,9 @@ class Recognise:
 
         # construct the argument parser and parse the arguments
         ap = argparse.ArgumentParser()
-        ap.add_argument("-e", "--encodings", default="encodings.pickle",
-        help="path to serialized db of facial encodings")
-        ap.add_argument("-r", "--resolution", type=int, default=240,
-            help="Resolution of the video feed")
-        ap.add_argument("-d", "--detection-method", type=str, default="hog",
-            help="face detection model to use: either `hog` or `cnn`")
+        ap.add_argument("-e", "--encodings", default="encodings.pickle", help="path to serialized db of facial encodings")
+        ap.add_argument("-r", "--resolution", type=int, default=240, help="Resolution of the video feed")
+        ap.add_argument("-d", "--detection-method", type=str, default="hog", help="face detection model to use: either `hog` or `cnn`")
         args = vars(ap.parse_args())
 
         # load the known faces and embeddings
@@ -48,7 +45,7 @@ class Recognise:
 
         # initialize the video stream and then allow the camera sensor to warm up
         print("[INFO] starting video stream...")
-        vs = VideoStream(src = 0).start()
+        vs = VideoStream(src=0).start()
         time.sleep(2.0)
 
         # loop over frames from the video file stream
@@ -59,12 +56,12 @@ class Recognise:
             # convert the input frame from BGR to RGB then resize it to have
             # a width of 750px (to speedup processing)
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            rgb = imutils.resize(frame, width = args["resolution"])
+            rgb = imutils.resize(frame, width=args["resolution"])
 
             # detect the (x, y)-coordinates of the bounding boxes
             # corresponding to each face in the input frame, then compute
             # the facial embeddings for each face
-            boxes = face_recognition.face_locations(rgb, model = args["detection_method"])
+            boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
             encodings = face_recognition.face_encodings(rgb, boxes)
             names = []
 
@@ -92,7 +89,7 @@ class Recognise:
                     # determine the recognized face with the largest number
                     # of votes (note: in the event of an unlikely tie Python
                     # will select first entry in the dictionary)
-                    name = max(counts, key = counts.get)
+                    name = max(counts, key=counts.get)
 
                 # update the list of names
                 names.append(name)
@@ -104,5 +101,3 @@ class Recognise:
                 # Set a flag to sleep the cam for fixed time
                 vs.stop()
                 return name
-
-
