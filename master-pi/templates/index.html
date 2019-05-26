@@ -1,19 +1,66 @@
 <!DOCTYPE html>
     <head>
-        <title>Person</title>
+        <title>Library Admin Panel</title>
+        <style>
+                table, th, td {
+                  border: 1px solid black;
+                }
+                </style>
     </head>
     <body>
+        <h2>Generate Library Daily Report</h2>
+        <button onclick="window.location.href = 'https://datastudio.google.com/open/1wVlGLrE9p_EcmUeWL4N2NV8Mp5U6nyj0';">Generate Report</button>
+
+        <h2>Library Catalogue</h2>
         <table>
             <tr>
                 <th>BookID</th>
                 <th>Title</th>
+                <th>Author</th>
+                <th>PublishedDate</th>
+                <th>ISBN</th>
             </tr>
             {%for book in books%}
                 <tr>
                     <td>{{book.BookID}}</td>
                     <td>{{book.Title}}</td>
+                    <td>{{book.Author}}</td>
+                    <td>{{book.PublishedDate}}</td>
+                    <td>{{book.ISBN}}</td>
+
                 </tr>
             {%endfor%}
         </table>
+        <br />
+
+        <h2>Add new Book to Library Catalogue</h2>
+      <form action = "http://localhost:5000/addbookform" method = "POST">
+         <p>Title <input type = "text" name = "title" /></p>
+         <p>Author <input type = "text" name = "author" /></p>
+         <p>Date Published <input type = "text" name = "publisheddate" /></p>
+         <p>ISBN <input type ="text" name = "isbn" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+      <h2>Edit Book in Library Catalogue</h2>
+      <form action = "http://localhost:5000/editbookform" method = "POST">
+         <p>BookID<input type = "text" name = "bookid" /></p>
+         <p>Title <input type = "text" name = "title" /></p>
+         <p>Author <input type = "text" name = "author" /></p>
+         <p>Date Published <input type = "text" name = "publisheddate" /></p>
+         <p>ISBN <input type ="text" name = "isbn" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+      <h2>Delete Book from Catalogue</h2>
+      <form action = "http://localhost:5000/deletebookform" method = "POST">
+         <p>Book ID <input type = "text" name = "bookid" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+
+
+      
+
     </body>
 </html>
