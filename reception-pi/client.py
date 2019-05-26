@@ -39,6 +39,7 @@ class Menu:
     def getselection(self):
         """
         For user to make selection
+
         Return:
             selection: user's selection to interact to menu
         except:
@@ -63,6 +64,7 @@ class Menu:
     def login_option(self):
         """
         Login option menu for user to select method to login
+
         Return:
             1 if user choose to login with email
             2 if user choose to login with username
@@ -90,6 +92,7 @@ class Menu:
     def get_login_detail(self, email):
         """
         Get user login information, either email or username
+
         Param
             if user choose to login with email
         Return 
@@ -112,6 +115,7 @@ class Userdb:
     def __init__(self, config):
         """
         constructor
+
         Parma:
             config: local database config
         """
@@ -185,6 +189,7 @@ class Userdb:
     def exist_info(self, info, email):
         """
         check if username already exist to prevent duplicate username
+
         Param:
             info: info to register for new user
             email: Trus when checking duplicate email, False for username
@@ -207,10 +212,12 @@ class Userdb:
     def hash_password(self, password):
         """
         convert plaintext password into encrypted password
+
         Parma:
             password: plaintext password
         Return:
             salted password
+
         Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
         """
         salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
@@ -221,12 +228,14 @@ class Userdb:
     def verify_password(self, stored_password, provided_password):
         """
         check if provided password match with stored password
+
         Parma:
             stored_password: salted password stored in database
             provided_password: password that need to be compared with
         Return:
             True if two password match
             False otherwise
+
         Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
         """
         salt = stored_password[:64]
@@ -238,6 +247,7 @@ class Userdb:
     def login(self, detail, email_login):
         """
         login at reception pi
+
         Param:
             detail: login detail, either username or email
             email_login: True if user choose to login with email, False if user choose to login with username
@@ -283,6 +293,7 @@ class Config:
     def getdbuser(self):
         """
         get database username
+
         Return:
             database username
         """
@@ -291,6 +302,7 @@ class Config:
     def getdbpass(self):
         """
         get database user password
+
         Return:
             database uesr password
         """
@@ -299,6 +311,7 @@ class Config:
     def getdbname(self):
         """
         get database name
+
         Return:
             database name
         """
@@ -307,6 +320,7 @@ class Config:
     def gethostname(self):
         """
         get hostname
+
         Return:
             hostname
         """
@@ -325,6 +339,7 @@ class SocketSession:
     def Connect(self, user):
         """
         connect to master pi using socket
+
         Parma:
             user: logged in user
         Return:
@@ -415,6 +430,7 @@ class Main:
     def RemoteMenu(self, user):
         """
         Connect to Master Pi for borrow, return book options
+
         Param:
             uesr: user that logged in
         """

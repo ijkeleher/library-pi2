@@ -10,22 +10,9 @@ Welcome to PythonAssignment2's documentation!
    :maxdepth: 4
    :caption: Contents:
 
+   client
+   master
 
-Reception-Pi Client
-===================
-
-.. automodule:: client
-	:members:
-	:undoc-members:
-	:show-inheritance:
-
-Master-Pi Server
-===================
-
-.. automodule:: server
-	:members:
-	:undoc-members:
-	:show-inheritance:
 
 Indices and tables
 ==================
