@@ -439,6 +439,7 @@ class SocketSession:
                 book_code = qrcode.scan()
                 self.sock.sendall(bytes(book_code, 'utf-8'))
                 excase = True
+                continue
 
             if 'TERMINATE_MAGIC_8192' in response:
                 print("Logging out...\n")

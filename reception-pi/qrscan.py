@@ -21,7 +21,8 @@ class QRscan:
 
         # initialize the video stream and allow the camera sensor to warm up
         print("[INFO] starting video stream...")
-        video_stream = VideoStream(src=0).start()
+        video_stream_obj = VideoStream(src=0)
+        video_stream = video_stream_obj.start()
         time.sleep(2.0)
 
         # found = set()
@@ -42,6 +43,7 @@ class QRscan:
                 # string
                 barcode_data = barcode.data.decode("utf-8")
                 # barcodeType = barcode.type
+                video_stream_obj.stop()	
                 return barcode_data
 
 

@@ -138,11 +138,12 @@ Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
                 book_id, "borrowed"])
         data = cursor.fetchone()
 
-        event_id = data[0]
-        book_borrow_id = data[1]
-
         # The book exists
-        if data is not None and event_id is not None:
+        if data is not None and data[0] is not None:
+	
+            event_id = data[0]
+            book_borrow_id = data[1]
+
 
             print("Deleting event " + str(event_id))
             calender.delete(event_id)
@@ -284,8 +285,9 @@ class SocketSession:
                         response += menutext
 
                     elif menu is 'qr':
-                        self.db.return_book(user_choice, self.calender)
-                        response = 'Book returned! Book = ' + user_choice
+                        ret = self.db.return_book(user_choice, self.calender)
+                        if ret is not '':
+                            response = "Book returned! Book's ID " + user_choice
                         response += menutext
                         menu = 'main'
                     elif menu is 'borrow':

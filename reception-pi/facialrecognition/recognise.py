@@ -6,9 +6,9 @@
 # OR specifying the encodings, screen resolution
 #     python3 recognise.py -e encodings.pickle -r 240
 
-## Acknowledgement
-## This code is adapted from:
-## https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/
+# Acknowledgement
+# This code is adapted from:
+# https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/
 
 # import the necessary packages
 import argparse
@@ -18,6 +18,7 @@ from imutils.video import VideoStream
 import face_recognition
 import imutils
 import cv2
+
 
 class Recognise:
     """
@@ -34,16 +35,31 @@ class Recognise:
 
         # construct the argument parser and parse the arguments
         ap = argparse.ArgumentParser()
-        ap.add_argument("-e", "--encodings", default="encodings.pickle", help="path to serialized db of facial encodings")
-        ap.add_argument("-r", "--resolution", type=int, default=240, help="Resolution of the video feed")
-        ap.add_argument("-d", "--detection-method", type=str, default="hog", help="face detection model to use: either `hog` or `cnn`")
+        ap.add_argument(
+            "-e",
+            "--encodings",
+            default="encodings.pickle",
+            help="path to serialized db of facial encodings")
+        ap.add_argument(
+            "-r",
+            "--resolution",
+            type=int,
+            default=240,
+            help="Resolution of the video feed")
+        ap.add_argument(
+            "-d",
+            "--detection-method",
+            type=str,
+            default="hog",
+            help="face detection model to use: either `hog` or `cnn`")
         args = vars(ap.parse_args())
 
         # load the known faces and embeddings
         print("[INFO] loading encodings...")
         data = pickle.loads(open(args["encodings"], "rb").read())
 
-        # initialize the video stream and then allow the camera sensor to warm up
+        # initialize the video stream and then allow the camera sensor to warm
+        # up
         print("[INFO] starting video stream...")
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
@@ -61,7 +77,8 @@ class Recognise:
             # detect the (x, y)-coordinates of the bounding boxes
             # corresponding to each face in the input frame, then compute
             # the facial embeddings for each face
-            boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
+            boxes = face_recognition.face_locations(
+                rgb, model=args["detection_method"])
             encodings = face_recognition.face_encodings(rgb, boxes)
             names = []
 
@@ -69,7 +86,8 @@ class Recognise:
             for encoding in encodings:
                 # attempt to match each face in the input image to our known
                 # encodings
-                matches = face_recognition.compare_faces(data["encodings"], encoding)
+                matches = face_recognition.compare_faces(
+                    data["encodings"], encoding)
                 name = "Unknown"
 
                 # check to see if we have found a match

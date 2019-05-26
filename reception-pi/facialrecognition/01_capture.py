@@ -6,14 +6,15 @@
 # OR specifying the dataset and user/id
 #     python3 02_capture.py -i dataset -n default_user
 
-## Acknowledgement
-## This code is adapted from:
-## https://www.hackster.io/mjrobot/real-time-face-recognition-an-end-to-end-project-a10826
+# Acknowledgement
+# This code is adapted from:
+# https://www.hackster.io/mjrobot/real-time-face-recognition-an-end-to-end-project-a10826
 
 # import the necessary packages
 import os
 import argparse
 import cv2
+
 
 class Main:
     def main(self):
@@ -23,8 +24,13 @@ class Main:
 
         # construct the argument parser and parse the arguments
         ap = argparse.ArgumentParser()
-        ap.add_argument("-n", "--name", required=True, help="The name/id of this person you are recording")
-        ap.add_argument("-i", "--dataset", default="dataset", help="path to input directory of faces + images")
+        ap.add_argument(
+            "-n",
+            "--name",
+            required=True,
+            help="The name/id of this person you are recording")
+        ap.add_argument("-i", "--dataset", default="dataset",
+                        help="path to input directory of faces + images")
         args = vars(ap.parse_args())
 
         # use name as folder name
@@ -42,7 +48,8 @@ class Main:
         # Set video height
         cam.set(4, 480)
         # Get the pre-built classifier that had been trained on 3 million faces
-        face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        face_detector = cv2.CascadeClassifier(
+            "haarcascade_frontalface_default.xml")
 
         img_counter = 0
         while img_counter <= 10:
@@ -60,11 +67,11 @@ class Main:
             if len(faces) == 0:
                 print("No face detected, please try again")
                 continue
-            
+
             for (x, y, w, h) in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 img_name = "{}/{:04}.jpg".format(folder, img_counter)
-                cv2.imwrite(img_name, frame[y : y + h, x : x + w])
+                cv2.imwrite(img_name, frame[y: y + h, x: x + w])
                 print("{} written!".format(img_name))
                 img_counter += 1
 
