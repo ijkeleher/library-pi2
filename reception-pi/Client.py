@@ -277,7 +277,12 @@ class SocketSession:
            
             if not excase:
                 # Get some user input
-                inp = input("Please enter your response: ")
+                inp = str(input("Please enter your response: "))
+                if not inp:
+                    inp = None
+                if inp is None:
+                    print("Invalid response!")
+                    continue
             
                 # Shoot it off to the server
                 self.sock.sendall(bytes(inp, 'UTF-8'))
@@ -287,19 +292,23 @@ class SocketSession:
             # Get the response
             response = str(self.sock.recv(4096), 'utf-8')
             if 'Please enter a book title' in response:
-                selection = int(input("Please select searching method:\n" +
-                    "1. Input book detail\n" +
-                    "2. Voice search\n"))
-                if selection == 1:
-                    book_name = input("Book name: ")
-                    self.sock.sendall(bytes(book_name, 'UTF-8'))
-                elif selection == 2:
-                    print("Listening...\n")
-                    speech = Speech2Text()
-                    book_name = speech.record()
-                    if book_name is None:
-                        book_name = "THISISNOTGONNAMATCHANYTHING"
-                    self.sock.sendall(bytes(book_name, 'UTF-8'))
+                try:
+                    selection = int(input("Please select searching method:\n" +
+                        "1. Input book detail\n" +
+                        "2. Voice search\n"))
+                    if selection == 1:
+                        book_name = input("Book name: ")
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                    elif selection == 2:
+                        print("Listening...\n")
+                        speech = Speech2Text()
+                        book_name = speech.record()
+                        if book_name is None:
+                            book_name = "THISISNOTGONNAMATCHANYTHING"
+                        self.sock.sendall(bytes(book_name, 'UTF-8'))
+                except ValueError: # try catch for selection input
+                    print("Invalid Option")
+                    self.sock.sendall(bytes('THISISNOTGONNAMATCHANYTHING', 'UTF-8'))
                     
                 excase = True
 
@@ -417,12 +426,6 @@ class Main:
 
             elif selection == 2:
                 db.createuser()
-            # elif selection == 3:
-            #     sys.exit(0)
-            # elif selection == 4:
-            #     qrscan = QRscan()
-            #     book = qrscan.scan()
-            #     print("Book returned: " + book)
             else:
                 sys.exit(0)
 
