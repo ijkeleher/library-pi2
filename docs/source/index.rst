@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PythonAssignment2's documentation!
-=============================================
+Welcome to the documentation for IoT Assignment 2!
+==================================================
 
 .. toctree::
    :maxdepth: 4
@@ -13,6 +13,7 @@ Welcome to PythonAssignment2's documentation!
    client
    master
    utility
+   flask
 
 
 Indices and tables

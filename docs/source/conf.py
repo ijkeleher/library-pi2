@@ -21,8 +21,8 @@ sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
 
-project = 'PythonAssignment2'
-copyright = '2019, Blaise Saunders, Inci Keleher, Boxuan Lu, Christopher Heuvel'
+project = 'Internet of Things Assignment 2'
+copyright = '2019 - Blaise Saunders, Inci Keleher, Boxuan Lu, Christopher Heuvel'
 author = 'Blaise Saunders, Inci Keleher, Boxuan Lu, Christopher Heuvel'
 
 # The full version, including alpha/beta/rc tags
