@@ -168,6 +168,9 @@ class SocketSession:
 				print("Connection terminated... Listening again")
 
 
+class Speech2Text:
+    def record(self):
+        pass
 
 
 class Main:
