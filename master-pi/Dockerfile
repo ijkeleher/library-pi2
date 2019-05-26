@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt
 # Run app.py when the container launches
 COPY . /app
 
-CMD python3 flask_main.py
+CMD flask run --host=0.0.0.0
