@@ -33,6 +33,15 @@ linux
 
 ### navigate to folder container docker-compose.yml
     $ cd path/to/master-pi
+    
+### create a .env file with the following
+    FLASK_ENV=development
+    FLASK_APP=flask_main.py
+    SECRET_KEY=<key>
+    DB_USER=root
+    DB_PW=<pw>
+    ADMIN_USER=jaqen
+    ADMIN_PW=<pw>
 
 ### build docker container
     $ docker-compose build
