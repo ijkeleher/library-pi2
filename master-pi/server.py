@@ -12,18 +12,38 @@ class Clouddb:
 
 	def __init__(self, config):
 		self.__conn = MySQLdb.connect(config.gethostname(), config.getdbuser(), config.getdbpass(), config.getdbname())
-		self.email_addr = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
+		self.email_addr = re.compile(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
 
 
 	def hash_password(self, password):
-		"""Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+		"""
+        convert plaintext password into encrypted password
+
+        Parma:
+            password: plaintext password
+        Return:
+            salted password
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
 		salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
 		pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
 		pwdhash = binascii.hexlify(pwdhash)
 		return (salt + pwdhash).decode('ascii')
 
 	def verify_password(self, stored_password, provided_password):
-		"""Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/"""
+		"""
+        check if provided password match with stored password
+
+        Parma:
+            stored_password: salted password stored in database
+            provided_password: password that need to be compared with
+        Return:
+            True if two password match
+            False otherwise
+
+        Reference: https://www.vitoshacademy.com/hashing-passwords-in-python/
+        """
 		salt = stored_password[:64]
 		stored_password = stored_password[64:]
 		pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'), salt.encode('ascii'), 100000)
@@ -32,16 +52,20 @@ class Clouddb:
 
 	def search(self, query, queryType):
 		"""
-		Sear
+		sql query to cloud database
+
 		Param:
-			detail: login detail, either username or email
-			email_login: True if user choose to login with email, False if user choose to login with username
+			query: search query
+
+			queryType: search method, isbn if search according to isbn
 		Return:
-			True if login is valid
-			False otherwise
+			search result, empty string if no match found
 		"""
 		cursor = self.__conn.cursor()
-		cursor.execute("SELECT * FROM Book WHERE Title LIKE %s", ["%"+query+"%"])
+		if queryType is "isbn":
+			cursor.execute("SELECT * FROM Book WHERE isbn LIKE %s", [query])
+		else:
+			cursor.execute("SELECT * FROM Book WHERE Title LIKE %s", ["%"+query+"%"])
 		data = cursor.fetchall()
 		if data is not None:
 			return data
@@ -59,15 +83,39 @@ class Config:
 			print("Can't open "+ filename)
 
 	def getdbuser(self):
+		"""
+		get database username
+
+		Return:
+			database username
+		"""
 		return self.__conf['dbuser']
 
 	def getdbpass(self):
+		"""
+		get database user password
+
+		Return:
+			database uesr password
+		"""
 		return self.__conf['dbpass']
 
 	def getdbname(self):
+		"""
+		get database name
+
+		Return:
+			database name
+		"""
 		return self.__conf['dbname']
 
 	def gethostname(self):
+		"""
+		get hostname
+
+		Return:
+			hostname
+		"""
 		return self.__conf['hostname']
 
 
@@ -152,8 +200,12 @@ class SocketSession:
 						menu = 'main'
 						response += "\nReturning to main menu\n"
 						response += menutext
-					elif menu is 'qr':
-						response = 'Book returned! Book = '+user_choice
+					elif menu is 'qr': # search book according to qr code received
+						books = self.db.search(user_choice, "isbn")
+						book_name = ""
+						for book in books:
+							book_name = book[1]
+						response = 'Book returned! Book = '+ book_name
 						menu = 'main'
 
 

@@ -1,20 +1,30 @@
-from imutils.video import VideoStream
-from pyzbar import pyzbar
-import datetime
-import imutils
-import time
-import cv2
+#!/usr/bin/env python3
 
-class qrscan:
+from imutils.video import VideoStream
+import time
+import imutils
+from pyzbar import pyzbar
+
+
+class QRscan:
+    """
+    QR Code scanner
+    """
 
     def scan(self):
+        """
+        scan qr code to get information
+        
+        Return:
+            barcodeData: a bytes object
+        """
 
         # initialize the video stream and allow the camera sensor to warm up
         print("[INFO] starting video stream...")
         vs = VideoStream(src=0).start()
         time.sleep(2.0)
 
-        found = set()
+        # found = set()
 
         # loop over the frames from the video stream
         while True:
@@ -30,5 +40,9 @@ class qrscan:
             for barcode in barcodes:
                 # the barcode data is a bytes object so we convert it to a string
                 barcodeData = barcode.data.decode("utf-8")
-                barcodeType = barcode.type
+                # barcodeType = barcode.type
                 return barcodeData
+
+
+if __name__ == "__main__":
+    QRscan().scan()
