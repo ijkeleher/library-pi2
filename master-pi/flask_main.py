@@ -49,8 +49,6 @@ db.init_app(app)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-
-
 # Our mock database.
 users = {ADMIN_USER: {'password': ADMIN_PW}}
 
