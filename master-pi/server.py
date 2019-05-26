@@ -120,10 +120,11 @@ class Clouddb:
 		cursor.execute("SELECT EventID, BookBorrowedID FROM BookBorrowed WHERE BookID=%s AND Status=%s", [book_id, "borrowed"])
 		data = cursor.fetchone()
 		
+		event_id = data[0]
+		book_borrow_id = data[1]
+		
 		# The book exists
-		if data is not None:
-			event_id = data[0]
-			book_borrow_id = data[1]
+		if data is not None and event_id is not None:
 
 			print("Deleting event "+str(event_id))
 			calender.delete(event_id)

@@ -389,7 +389,8 @@ class SocketSession:
                 try:
                     selection = int(input("Please select searching method:\n" +
                                           "1. Input book detail\n" +
-                                          "2. Voice search\n"))
+                                          "2. Voice search\n" +
+					  "Please enter your response: "))
                     if selection == 1:
                         book_name = input("Book name: ")
                         self.sock.sendall(bytes(book_name, 'UTF-8'))
