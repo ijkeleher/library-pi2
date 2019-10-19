@@ -4,6 +4,7 @@
 * Utilises facial recognition and image detection for book borrowing
 * Flask API and Admin Dashboard for tracking book loan data
 * Google Cloud SQL used for database
+* Google Data Studio used for analytics
 
 ### Library functions API
 https://documenter.getpostman.com/view/6571696/S1M3uQMp?version=latest&fbclid=IwAR381X4IIvZGb2-dSPBbFoUDg4N9bJXEI4cMnWPnPBb0YU82STHn_vHhmJ0
